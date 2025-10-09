@@ -1,9 +1,9 @@
 from datetime import datetime
 
 class Time_Capsule:
-    def __init__(self, date, name):
+    def __init__(self, date, userID):
         self.set_lock(date)
-        self.name = name
+        self.user = userID
 
     def set_lock(self, date):
         # encrypt
