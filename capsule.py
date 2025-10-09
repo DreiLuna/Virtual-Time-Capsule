@@ -5,10 +5,11 @@ class Time_Capsule:
         self.set_lock(date)
         self.name = name
 
-    def set_lock(capsule, date):
-        #encrypt
+    def set_lock(self, date):
+        # encrypt
         return
 
-    def unlock(capsule, date):
-        if (datetime.now() == date):
+    def unlock(self, date):
+        if (datetime.now().date() == date):
+            # decrypt
             return
