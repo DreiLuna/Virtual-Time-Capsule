@@ -3,10 +3,14 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./auth/AuthContext";
 import ProtectedRoute from "./auth/ProtectedRoute";
+
+//^ import assets/pages
 import Login from "./pages/Login";
-import Landing from "./App";
-import Dashboard from "./pages/Dashboard";  
-import "./index.css";
+import Landing from "./pages/Landing";
+import Dashboard from "./pages/Dashboard"; 
+
+//$ importing css
+import "./css/index.css";
 
 function HomeDefault() {
   const { isAuthed } = useAuth();

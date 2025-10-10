@@ -1,8 +1,14 @@
 import { useState } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
-import VTC_logo from './assets/VTC_logo.png'
-import './App.css'
-import Login from './pages/Login'
+
+
+//^ Importing assets/pages
+import VTC_logo from '../assets/VTC_logo.png'
+
+import Login from './Login'
+
+//$ importing css
+import '../css/Landing.css'
 
 function Landing() {
   const [count, setCount] = useState(0)
