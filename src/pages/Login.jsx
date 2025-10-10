@@ -1,8 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
+
+//^ Importing assets
 import house_icon from "../assets/house_icon.png"
-import "../App.css"
+//$ importing css
+import "../css/Landing.css"
 
 export default function Login() {
   const { login } = useAuth();

@@ -1,5 +1,7 @@
 import { useAuth } from "../auth/AuthContext";
-import "../App.css"
+
+//$ importing css
+import "../css/Landing.css"
 
 export default function Dashboard() {
   const { user, logout } = useAuth();
