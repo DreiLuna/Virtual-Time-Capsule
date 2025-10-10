@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { Routes, Route, useNavigate } from 'react-router-dom'
 import VTC_logo from './assets/VTC_logo.png'
 import './App.css'
-import Login from './Login'
+import Login from './pages/Login'
 
-function Home() {
+function Landing() {
   const [count, setCount] = useState(0)
   const navigate = useNavigate()
 
@@ -30,7 +30,7 @@ function Home() {
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/" element={<Landing />} />
       <Route path="/login" element={<Login />} />
     </Routes>
   )
