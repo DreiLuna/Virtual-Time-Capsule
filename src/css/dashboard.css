@@ -1,0 +1,97 @@
+#root {
+    max-width: 1280px;
+    margin-bottom: 0;
+}
+/* navbar */
+.navbar {  
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0;
+    margin-bottom: 0;
+    padding: 0;
+    position: fixed;
+    margin-left: auto;
+    top: 1em;
+    right: 0;
+    width:  100%; /* Ensure it spans the full width */
+    Height: 5%;
+    z-index: 1000; /* Ensure it's above other content */
+}
+
+.logoutbtn {
+    margin: 1em;
+    padding: .75em;
+    margin-bottom: 0%;
+    top: 1em;
+    text-align: left;
+}
+
+.title {
+    margin: .5em;
+    margin-bottom: 0;
+    padding: 0;
+}
+
+.topTitle {
+    margin-top: .5em;
+    margin-bottom: 0;
+}
+
+.underTitle {
+    text-align: left;
+    margin-top: 0;
+    margin: .5em;
+    padding: 0;
+    font-weight: normal;
+}
+
+.btn:hover {
+    filter: drop-shadow(0 0 3em #ffffffa9);
+}
+/* navbar */
+
+.capsuleDiv {
+    width: 128px;        /* same as Tailwind's w-32 */
+    height: 128px;       /* same as Tailwind's h-32 */
+    object-fit: cover;   /* keeps aspect ratio */
+    border-radius: 12px; /* rounded corners */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* subtle shadow */
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+
+}
+
+.capsuleDiv img {
+    width: 150px;
+}
+
+
+.capsuleDiv img:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
+}
+
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    align-items: flex-start;     /* align to top vertically */
+
+}
+.content {
+    position: relative;
+    top: 150px;
+    padding-top: 100;
+    margin-top: 100;
+}
+
+.seperateCapsules {
+    display: flex;
+    align-items: center;
+    gap: 10px;               /* space between image and text */
+    padding: 8px 12px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
