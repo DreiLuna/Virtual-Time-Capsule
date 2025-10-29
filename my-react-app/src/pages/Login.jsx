@@ -2,6 +2,11 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 
+//^ Importing assets
+import house_icon from "../assets/house_icon.png"
+//$ importing css
+import "../css/Landing.css"
+
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
@@ -39,8 +44,11 @@ export default function Login() {
 
   return (
     <div className="center">
+      <div>
+        <img src={house_icon} className="logo House" alt="logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}></img>
+      </div>
       <form onSubmit={onSubmit} className="card">
-        <h1 className="h1">Sign in</h1>
+        <h2>Sign In</h2>
         <p className="help">
           Use <code>demo@site.com</code> / <code>password123</code> (demo).
         </p>
@@ -86,6 +94,15 @@ export default function Login() {
             onChange={onChange}
           />
           <label htmlFor="remember">Remember me</label>
+        </div>
+
+        <div style={{ marginTop: 12 }}>
+          <small>
+            New here?{" "}
+            <button type="button" className="link-like" onClick={() => navigate("/signup")}>
+              Create account
+            </button>
+          </small>
         </div>
 
         <button disabled={loading} className="btn">

@@ -36,9 +36,9 @@ h1 {
 }
 
 .input {
-   display:block; 
-   width:100%; 
-   margin-bottom:16px; 
+  display:block; 
+  width:100%; 
+  margin-bottom:16px; 
 }
 
 button {
@@ -72,4 +72,3 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
-

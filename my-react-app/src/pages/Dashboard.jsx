@@ -1,5 +1,8 @@
 import { useAuth } from "../auth/AuthContext";
 
+//$ importing css
+import "../css/Landing.css"
+
 export default function Dashboard() {
   const { user, logout } = useAuth();
 
@@ -7,7 +10,7 @@ export default function Dashboard() {
     <div className="page">
       <div className="topbar">
         <h1 className="title">Welcome, {user?.name}!</h1>
-        <button onClick={logout} className="linkbtn">Log out</button>
+        <button onClick={logout} className="btn">Log out</button>
       </div>
 
       <p className="container muted">
