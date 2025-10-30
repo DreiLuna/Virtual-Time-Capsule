@@ -7,7 +7,8 @@ import ProtectedRoute from "./auth/ProtectedRoute";
 //^ import assets/pages
 import Login from "./pages/Login";
 import Landing from "./pages/Landing";
-import Dashboard from "./pages/Dashboard"; 
+import Dashboard from "./pages/Dashboard";
+import AccountCreation from "./pages/AccountCreation";
 
 //$ importing css
 import "./css/index.css";
@@ -20,6 +21,7 @@ function HomeDefault() {
 const router = createBrowserRouter([
   { path: "/", element: <Landing /> },
   { path: "/login", element: <Login /> },
+  { path : "/signup", element: <AccountCreation /> },
   {
     element: <ProtectedRoute />, // gate everything below
     children: [{ path: "/dashboard", element: <Dashboard /> }],

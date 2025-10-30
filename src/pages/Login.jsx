@@ -96,6 +96,15 @@ export default function Login() {
           <label htmlFor="remember">Remember me</label>
         </div>
 
+        <div style={{ marginTop: 12 }}>
+          <small>
+            New here?{" "}
+            <button type="button" className="link-like" onClick={() => navigate("/signup")}>
+              Create account
+            </button>
+          </small>
+        </div>
+
         <button disabled={loading} className="btn">
           {loading ? "Signing in…" : "Sign in"}
         </button>
