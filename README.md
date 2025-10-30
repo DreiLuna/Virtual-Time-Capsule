@@ -2,7 +2,11 @@
 
 During testing use 'npm run dev' to test the website. You must have [node.js](https://nodejs.org/en) installed
 
-
+## INSTALLS *REQUIRED*
+- npm install
+- npm install lucide-react 
+- [node.js](https://nodejs.org/en)
+  
 ## React Compiler
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
