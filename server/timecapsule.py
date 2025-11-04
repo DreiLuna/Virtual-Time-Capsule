@@ -1,11 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
-from flask_jwt_extended import (
-    JWTManager,
-    create_access_token,
-    jwt_required,
-    get_jwt_identity,
-)
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_mail import Mail, Message
@@ -31,20 +26,20 @@ class TimeCapsuleApp:
 
         app = Flask(__name__)
 
-        # Configure settings for database and security
+        #Configure settings for database and security
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///timecapsule.db"
         app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
         app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
         app.config["UPLOAD_FOLDER"] = os.path.join(os.getcwd(), "uploads")
 
-        # Configure settings for the mail server
+        #Configure settings for the mail server
         app.config["MAIL_SERVER"] = "smtp.gmail.com"
         app.config["MAIL_PORT"] = 587
         app.config["MAIL_USE_TLS"] = True
         app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
         app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
 
-        database.init_app(app)
+        database.init_app(app)  
         jwt = JWTManager(app)
 
         return app, database
@@ -56,11 +51,11 @@ class User(database.Model):
     username = database.Column(database.String(80), unique=True, nullable=False)
     password = database.Column(database.String(200), nullable=False)
 
-    # Receive and extract username and password
-    @app.route("/login", methods=["POST"])
+    #Receive and extract username and password 
+    @app.route('/login', methods=['POST'])
     def login():
         try:
-            data = request.get_json()
+            data = request.get_json() 
 
             username = data.get("username")  # safe access
             password = data.get("password")
@@ -68,7 +63,7 @@ class User(database.Model):
             if user:
                 token = create_access_token(identity=user.id)
                 return jsonify({"access_token": token}), 200
-            else:
+            else: 
                 return jsonify({"error": "Invalid credentials"}), 401
         except:
             print("An error occured")
