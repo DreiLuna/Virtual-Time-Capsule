@@ -1,6 +1,6 @@
 ## Virtual Time Capsule
 
-During testing use 'npm run dev' to test the website. You must have [node.js](https://nodejs.org/en) installed
+During testing use 'npm run dev' while in the client folder to test the website.
 
 ## INSTALLS *REQUIRED*
 - [node.js](https://nodejs.org/en)
