@@ -3,8 +3,8 @@
 During testing use 'npm run dev' while in the client folder to test the website. You must have [node.js](https://nodejs.org/en) installed
 
 ## INSTALLS *REQUIRED*
-- npm install
 - [node.js](https://nodejs.org/en)
+- npm install
   
 ## React Compiler
 
