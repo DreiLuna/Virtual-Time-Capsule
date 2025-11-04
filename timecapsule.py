@@ -1,6 +1,10 @@
-from flask import Flask
+from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from dotenv import load_dotenv
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_mail import Mail, Message
+from flask_apscheduler import APScheduler
 from datetime import datetime
 from pathlib import Path
 from flask import current_app
@@ -16,12 +20,26 @@ class TimeCapsuleApp:
         self.app, self.database = self.initialize_app()
 
     def initialize_app(self):
+        load_dotenv()
+        print(os.getenv("SECRET_KEY"))
+
         app = Flask(__name__)
+
+        #Configure settings for database and security
         app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///timecapsule.db"
-        app.config["SECRET_KEY"] = "some_secret_key"
+        app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
+        app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
         app.config["UPLOAD_FOLDER"] = os.path.join(os.getcwd(), "uploads")
 
+        #Configure settings for the mail server
+        app.config["MAIL_SERVER"] = "smtp.gmail.com"
+        app.config["MAIL_PORT"] = 587
+        app.config["MAIL_USE_TLS"] = True
+        app.config["MAIL_USERNAME"] = os.getenv("MAIL_USERNAME")
+        app.config["MAIL_PASSWORD"] = os.getenv("MAIL_PASSWORD")
+
         database.init_app(app)  
+        jwt = JWTManager(app)
 
         return app, database
 
@@ -30,6 +48,23 @@ class User(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     username = database.Column(database.String(80), unique=True, nullable=False)
     password = database.Column(database.String(200), nullable=False)
+
+    #Receive and extract username and password 
+    @app.route('/login', methods=['POST'])
+    def login():
+        try:
+            data = request.get_json() 
+
+            username = data.get("username")  # safe access
+            password = data.get("password")
+            user = User.login_user(username, password)
+            if user:
+                token = create_access_token(identity=user.id)
+                return jsonify({"access_token": token}), 200
+            else: 
+                return jsonify({"error": "Invalid credentials"}), 401
+        except:
+            print("An error occured")
 
     # Hashes the password and registers the user if the username is not already taken
     @classmethod
