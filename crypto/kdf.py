@@ -14,6 +14,7 @@ def derive_key(password: bytes, salt: bytes) -> bytes:
         password,
         salt,
         PBKDF2_ITERATIONS,
+        dklen = 32
     )
     return kdf
 
