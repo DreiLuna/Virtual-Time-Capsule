@@ -116,7 +116,7 @@ export default function AccountCreation() {
           </button>
         </div>
 
-        <button disabled={loading} className="btn">
+        <button disabled={loading} className="btn" style={{ marginTop: '5px' }}>
           {loading ? "Creating…" : "Create Account"}
         </button>
 

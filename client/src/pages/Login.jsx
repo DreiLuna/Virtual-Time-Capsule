@@ -87,6 +87,10 @@ export default function Login() {
           </button>
         </div>
 
+        <button disabled={loading} className="btn" style={{ marginTop: '5px' }}>
+          {loading ? "Signing in…" : "Sign in"}
+        </button>
+
         <div className="row">
           <input
             id="remember"
@@ -105,10 +109,6 @@ export default function Login() {
             </button>
           </small>
         </div>
-
-        <button disabled={loading} className="btn">
-          {loading ? "Signing in…" : "Sign in"}
-        </button>
       </form>
     </div>
   );
