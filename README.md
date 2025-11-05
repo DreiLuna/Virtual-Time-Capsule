@@ -6,6 +6,9 @@ During testing use 'npm run dev' while in the client folder to test the website.
 - [node.js](https://nodejs.org/en)
 - npm install
   
+## TESTING
+- in client repo, run 'npm test'
+
 ## React Compiler
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
