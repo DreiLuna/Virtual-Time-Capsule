@@ -9,7 +9,7 @@ from datetime import datetime
 from pathlib import Path
 import os
 
-#create database globally
+# create database globally
 database = SQLAlchemy()
 
 class TimeCapsuleApp:
@@ -41,20 +41,16 @@ class TimeCapsuleApp:
 
         return app, database
 
-#Class to initialize database with user id, username, and password
+# Class to initialize database with user id, username, and password
 class User(database.Model):
     id = database.Column(database.Integer, primary_key=True)
     username = database.Column(database.String(80), unique=True, nullable=False)
     password = database.Column(database.String(200), nullable=False)
 
-    #Receive and extract username and password 
-    @app.route('/login', methods=['POST'])
-    def login():
+    # Receive and extract username and password
+    @app.route('/login', methods=['GET'])
+    def login(cls):
         try:
-            data = request.get_json() 
-
-            username = data.get("username")  # safe access
-            password = data.get("password")
             user = User.login_user(username, password)
             if user:
                 token = create_access_token(identity=user.id)
@@ -65,10 +61,17 @@ class User(database.Model):
             print("An error occured")
 
     # Hashes the password and registers the user if the username is not already taken
-    @classmethod
-    def register_user(cls, username, password):
+    @app.route("/register", methods=['POST'])
+    def register(cls):
+        try:
+            data = request.get_json() 
+
+            username = data.get("username")
+            password = data.get("password")
+        except:
+            print("An error occured")
         if cls.username_exists(username):
-            print("Username is taken")
+            return jsonify({"message": "Username is taken."})
         else:
             hashed_password = generate_password_hash(password)
             new_user = User(username = username, password = hashed_password)
@@ -76,7 +79,16 @@ class User(database.Model):
             database.session.commit()
             print("Registration successful")
 
-    #Check if username exist in database
+    @classmethod
+    def parse_user_credentials():
+        data = request.get_json()
+
+        username = data.get("username")  # safe access
+        password = data.get("password")
+
+        return username, password
+
+    # Check if username exist in database
     @classmethod
     def username_exists(cls, username):
         user = cls.query.filter(cls.username == username).first()
@@ -84,9 +96,8 @@ class User(database.Model):
             return True
         else:
             return False
-        
 
-    #Verifies credentials and print if login was successful
+    # Verifies credentials and print if login was successful
     @classmethod
     def login_user(cls, username, password):
         user = cls.query.filter(cls.username == username).first()
@@ -155,7 +166,7 @@ def save_file_to_upload_folder(file):
         return file_path
     except:
         print("An exception occured")
-    
+
 if __name__ == "__main__":
     time_capsule_app = TimeCapsuleApp()
     with time_capsule_app.app.app_context():

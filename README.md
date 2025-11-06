@@ -2,11 +2,12 @@
 
 During testing use 'npm run dev' while in the client folder to test the website.
 
+Note: replace proxy in package.json file and implement CORS when deploying
+
 ## INSTALLS *REQUIRED*
 - [node.js](https://nodejs.org/en)
 - pip install -r ./server/requirements.txt
 - npm install (while in client folder)
-
   
 ## React Compiler
 
