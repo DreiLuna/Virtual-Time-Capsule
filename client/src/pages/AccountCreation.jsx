@@ -52,7 +52,8 @@ export default function AccountCreation() {
     if (result.error) {
       setError("Error: ", result.error);
       return;
-    }
+    } 
+
     navigate("/dashboard");
   }
 
