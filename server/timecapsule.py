@@ -48,30 +48,26 @@ class User(database.Model):
     password = database.Column(database.String(200), nullable=False)
 
     # Receive and extract username and password
-    @app.route('/login', methods=['GET'])
+    @TimeCapsuleApp.app.route('/login', methods=['POST'])
     def login(cls):
         try:
-            user = User.login_user(username, password)
+            username, password = cls.parse_user_credentials()
+            user = cls.login_user(username, password)
             if user:
                 token = create_access_token(identity=user.id)
                 return jsonify({"access_token": token}), 200
             else: 
-                return jsonify({"error": "Invalid credentials"}), 401
+                return jsonify({"message": "Invalid credentials"}), 401
         except:
             print("An error occured")
 
     # Hashes the password and registers the user if the username is not already taken
-    @app.route("/register", methods=['POST'])
+    @TimeCapsuleApp.app.route("/register", methods=['POST'])
     def register(cls):
-        try:
-            data = request.get_json() 
+        username, password = cls.parse_user_credentials()
 
-            username = data.get("username")
-            password = data.get("password")
-        except:
-            print("An error occured")
         if cls.username_exists(username):
-            return jsonify({"message": "Username is taken."})
+            return jsonify({"message": "Username is taken."}), 400
         else:
             hashed_password = generate_password_hash(password)
             new_user = User(username = username, password = hashed_password)
@@ -81,12 +77,15 @@ class User(database.Model):
 
     @classmethod
     def parse_user_credentials():
-        data = request.get_json()
+        try:      
+            data = request.get_json()
 
-        username = data.get("username")  # safe access
-        password = data.get("password")
+            username = data.get("username")  # safe access with .get()
+            password = data.get("password")
 
-        return username, password
+            return username, password
+        except:
+            raise Exception("An error occured")
 
     # Check if username exist in database
     @classmethod

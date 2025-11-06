@@ -45,12 +45,12 @@ export default function AccountCreation() {
     }
     // Sending data to backend
     setLoading(true);
-    const res = await register(form.email, form.password);
+    const result = await register(form.email, form.password);
     setLoading(false);
 
     // Check for registration errors
-    if (!res.ok) {
-      setError(res.message || "Account Creation failed.");
+    if (result.error) {
+      setError("Error: ", result.error);
       return;
     }
     navigate("/dashboard");

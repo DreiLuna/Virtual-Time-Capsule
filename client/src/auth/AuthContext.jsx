@@ -9,21 +9,42 @@ export function AuthProvider({ children }) {
   });
   const [token, setToken] = useState(() => localStorage.getItem("demo_token"));
 
-  async function register(email, password) {
-    const response = await fetch("http://localhost:5000/register", {
+  async function postRequest(url, data) {
+    // Sending data to backend
+    const response = await fetch(url, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({email, password})
-    })
-
-    return response;
+      body: JSON.stringify(data),
+    });
+    // Parse JSON data from response
+    const result = await response.json();
+    // Checks for valid response
+    if (!response.ok) {
+      return {error: result.message || "Request failed"}
+    }
+    // Returns parsed JSON data
+    return result
   }
 
-  // Fake login API (replace with real fetch to your backend)
+  async function register(email, password) {
+    return await postRequest("http://localhost:5000/register", {email, password})
+  }
+
+  
   async function login(email, password) {
-    await new Promise(r => setTimeout(r, 500)); // simulate latency
+    const result = await postRequest("http://localhost:5000/login", { email, password })
+    
+    // This is being passed onto the login page which has the same
+    // code, so please replace with better idea if anyone has any
+    if (result.error) {
+      return result
+    }
+
+    setToken(result.access_token);
+
+    // Fake login API (replace with real fetch to your backend)
     // Demo check
     if (email === "demo@site.com" && password === "password123") {
       const fakeToken = "demo.jwt.token";
@@ -34,7 +55,6 @@ export function AuthProvider({ children }) {
       localStorage.setItem("demo_token", fakeToken);
       return { ok: true };
     }
-    return { ok: false, message: "Invalid email or password." };
   }
 
   function logout() {
@@ -44,7 +64,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem("demo_token");
   }
 
-  const value = useMemo(() => ({ user, token, login, logout, isAuthed: !!token }), [user, token]);
+  const value = useMemo(() => ({ user, token, register, login, logout, isAuthed: !!token }), [user, token]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
