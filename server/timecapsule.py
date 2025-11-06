@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, current_app
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from dotenv import load_dotenv
@@ -7,9 +7,7 @@ from flask_mail import Mail, Message
 from flask_apscheduler import APScheduler
 from datetime import datetime
 from pathlib import Path
-from flask import current_app
 import os
-
 
 #create database globally
 database = SQLAlchemy()

@@ -4,7 +4,9 @@ During testing use 'npm run dev' while in the client folder to test the website.
 
 ## INSTALLS *REQUIRED*
 - [node.js](https://nodejs.org/en)
-- npm install
+- pip install -r ./server/requirements.txt
+- npm install (while in client folder)
+
   
 ## React Compiler
 
