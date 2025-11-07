@@ -8,7 +8,7 @@ export function AuthProvider({ children }) {
     return raw ? JSON.parse(raw) : null;
   });
   const [token, setToken] = useState(() => localStorage.getItem("demo_token"));
-
+  
   async function postRequest(url, data) {
     // Sending data to backend
     const response = await fetch(url, {
@@ -29,10 +29,13 @@ export function AuthProvider({ children }) {
   }
 
   async function register(email, password) {
-    return await postRequest("http://localhost:5000/register", {email, password})
+    return postRequest("http://localhost:5000/register", {email, password})
   }
 
   async function login(email, password) {
+    if (result.error) {
+      return result
+    }
     const result = await postRequest("http://localhost:5000/login", { email, password })
     setToken(result.access_token);
 
@@ -50,9 +53,7 @@ export function AuthProvider({ children }) {
 
     // This is being passed onto the login page which has the same
     // code, so please replace with better idea if anyone has any
-    if (result.error) {
-      return result
-    }
+
   }
 
   function logout() {

@@ -61,4 +61,6 @@ def login():
         return jsonify({"message": "Invalid credentials"}), 401 # 401 means Unauthorized
 
     token = create_access_token(identity=user.id)
-    return jsonify({"access_token": token}), 200 # 200 means OK
+
+    # Temporary, replace with more secure spot like using httponly cookies
+    return jsonify({"access_token": token, "user" : user}), 200 # 200 means OK

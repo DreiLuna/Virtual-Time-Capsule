@@ -12,7 +12,7 @@ import os
 # create database globally
 database = SQLAlchemy()
 
-def initialize_app(self):
+def initialize_app():
     load_dotenv()
     print(os.getenv("SECRET_KEY"))
 
