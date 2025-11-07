@@ -34,10 +34,10 @@ export default function Login() {
     }
 
     setLoading(true);
-    const res = await login(form.email, form.password);
+    const result = await login(form.email, form.password);
     setLoading(false);
-    if (!res.ok) {
-      setError(res.message || "Login failed.");
+    if (result.error) {
+      setError(result.message || "Login failed.");
       return;
     }
     navigate("/dashboard");

@@ -11,13 +11,6 @@ export default function AccountCreation() {
   const auth = useAuth();
   const navigate = useNavigate();
 
-  const createFn = 
-    auth?.createAccount ??
-    auth?.signup ??
-    auth?.register ??
-    auth?.createUser ??
-    auth?.create;
-
   const [form, setForm] = useState({ 
     email: "",
     password: "",
@@ -37,6 +30,7 @@ export default function AccountCreation() {
     e.preventDefault();
     setError("");
 
+    // Registration Information Check
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
       setError("Please enter a valid email.");
       return;
@@ -49,19 +43,17 @@ export default function AccountCreation() {
       setError("Passwords do not match.");
       return;
     }
-
-    if (!createFn) {
-      setError("Account creation is not available.");
-      return;
-    }
-
+    // Sending data to backend
     setLoading(true);
-    const res = await login(form.email, form.password);
+    const result = await register(form.email, form.password);
     setLoading(false);
-    if (!res.ok) {
-      setError(res.message || "Account Creation failed.");
+
+    // Check for registration errors
+    if (result.error) {
+      setError("Error: ", result.error);
       return;
-    }
+    } 
+
     navigate("/dashboard");
   }
 

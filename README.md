@@ -1,10 +1,18 @@
 ## Virtual Time Capsule
 
-During testing use 'npm run dev' while in the client folder to test the website.
+*IMPORTANT*
+Always run in root directory, i.e. Virtual-Time-Capsule
+
+During testing use 'npm start' to test the website.
+To exit, press Ctrl + C
+
+Note: replace proxy in package.json file and implement CORS when deploying
 
 ## INSTALLS *REQUIRED*
 - [node.js](https://nodejs.org/en)
-- npm install
+- pip install -r ./server/requirements.txt
+- npm install (while in root directory)
+- npm install (while in client folder)
   
 ## TESTING
 - in client repo, run 'npm test'
