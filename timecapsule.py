@@ -21,7 +21,7 @@ Save Files utility uploaded to the server.
 
 The TimeCapsuleApp class is a startup of the Flask app, which starts up a database.
 relations, and the User and Capsule models determine the relationship between user accounts and
-time capsules are stored and accessed.
+time capsules are stored and accessed. 
 """
 
 #create database globally
