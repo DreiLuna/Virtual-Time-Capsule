@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../auth/AuthContext";
+import { useAuth, AuthProvider } from "../auth/AuthContext";
 
 //^ Importing assets
 import house_icon from "../assets/house_icon.png"
@@ -9,6 +9,7 @@ import "../css/Landing.css"
 
 export default function AccountCreation() {
   const auth = useAuth();
+  const auth2 = AuthProvider();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({ 
@@ -45,14 +46,14 @@ export default function AccountCreation() {
     }
     // Sending data to backend
     setLoading(true);
-    const result = await register(form.email, form.password);
+    const result = await auth2.register(form.email, form.password);
     setLoading(false);
 
     // Check for registration errors
     if (result.error) {
       setError("Error: ", result.error);
       return;
-    } 
+    }
 
     navigate("/dashboard");
   }

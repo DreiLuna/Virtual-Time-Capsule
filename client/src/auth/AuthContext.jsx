@@ -29,30 +29,31 @@ export function AuthProvider({ children }) {
   }
 
   async function register(email, password) {
-    return postRequest("http://localhost:5000/register", {email, password})
+    const data = postRequest("http://localhost:5000/register", { email, password })
+    console.log(data.message)
+    return data
   }
 
   async function login(email, password) {
+    const result = await postRequest("http://localhost:5000/login", { email, password })
     if (result.error) {
       return result
     }
-    const result = await postRequest("http://localhost:5000/login", { email, password })
     setToken(result.access_token);
+    console.log(result.access_token)
+    localStorage.setItem()
 
     // Fake login API (replace with real fetch to your backend)
     // Demo check
-    if (email === "demo@site.com" && password === "password123") {
-      const fakeToken = "demo.jwt.token";
-      const demoUser = { id: 1, email, name: "Demo User" };
-      setUser(demoUser);
-      setToken(fakeToken);
-      localStorage.setItem("demo_user", JSON.stringify(demoUser));
-      localStorage.setItem("demo_token", fakeToken);
-      return { ok: true };
-    }
-
-    // This is being passed onto the login page which has the same
-    // code, so please replace with better idea if anyone has any
+    // if (email === "demo@site.com" && password === "password123") {
+    //   const fakeToken = "demo.jwt.token";
+    //   const demoUser = { id: 1, email, name: "Demo User" };
+    //   setUser(demoUser);
+    //   setToken(fakeToken);
+    //   localStorage.setItem("demo_user", JSON.stringify(demoUser));
+    //   localStorage.setItem("demo_token", fakeToken);
+    //   return { ok: true };
+    // }
 
   }
 

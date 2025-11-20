@@ -17,9 +17,12 @@ def initialize_app():
     print(os.getenv("SECRET_KEY"))
 
     app = Flask(__name__)
+    path = os.getcwd()
 
     # Configure settings for database and security
-    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///timecapsule.db"
+    app.config["SQLALCHEMY_DATABASE_URI"] = (
+        "sqlite:////" + path + "/server/time_capsule/timecapsule.db"
+    )
     app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
     app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY")
     app.config["UPLOAD_FOLDER"] = os.path.join(os.getcwd(), "uploads")
