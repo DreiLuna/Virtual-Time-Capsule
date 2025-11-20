@@ -10,8 +10,8 @@ Note: replace proxy in package.json file and implement CORS when deploying
 
 ## INSTALLS *REQUIRED*
 - [node.js](https://nodejs.org/en)
-- pip install -r ./server/requirements.txt
 - npm install
+- pip install -r ./server/requirements.txt
   
 ## React Compiler
 
