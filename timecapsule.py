@@ -6,6 +6,23 @@ from pathlib import Path
 from flask import current_app
 import os
 
+"""
+timecapsule.py
+
+This module provides core backend logic for the Virtual Time Capsule.
+application. It provides:
+
+Configuration and set up of flask applications.
+Initialization of SQLAlchemy database.
+Registration and authentication (secure password hash) of the user.
+Creation of time capsule, uploading of files, the dates of unlock.
+User account and Capsule database models.
+Save Files utility uploaded to the server.
+
+The TimeCapsuleApp class is a startup of the Flask app, which starts up a database.
+relations, and the User and Capsule models determine the relationship between user accounts and
+time capsules are stored and accessed.
+"""
 
 #create database globally
 database = SQLAlchemy()
