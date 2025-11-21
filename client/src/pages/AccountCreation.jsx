@@ -49,7 +49,7 @@ export default function AccountCreation() {
     }
 
     setLoading(true);
-    const result = await register(form.email, form.password);
+    const result = await auth2.register(form.email, form.password);
     setLoading(false);
 
     if (result.error) {

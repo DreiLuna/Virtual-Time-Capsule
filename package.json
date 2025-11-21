@@ -3,8 +3,8 @@
   "scripts": {
     "start": "concurrently \"npm run start-frontend\" \"npm run start-backend\"",
     "start-frontend": "npm --prefix ./client run dev",
-    "start-backend": "python3 ./server/time_capsule/time_capsule_app.py",
-    "postinstall": "cd ./client && npm install"
+    "start-backend": "npm --prefix ./server/time_capsule run start:dev",
+    "postinstall": "cd ./client && npm install && cd .././server/time_capsule && npm install"
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
