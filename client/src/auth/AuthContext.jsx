@@ -1,8 +1,9 @@
-import { createContext, useContext, useMemo, useState, useState} from "react";
+import { createContext, useContext, useMemo, useState, useEffect} from "react";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
+  //stores user info
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -20,12 +21,12 @@ export function AuthProvider({ children }) {
   }, []);
 
   //send data to backend
-  const register = async (email, password, name) => {
+  const register = async (email, password) => {
     try {
       const response = await fetch('http://localhost:5000/register', {
         method: 'POST', 
         headers: {'Context-Type': 'application/json'},
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
