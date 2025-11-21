@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import express from 'express';
 import jwt from 'jsonwebtoken';
+import { hashPassword } from '../utils/helpers';
 
 const router = express.Router();
 
@@ -58,9 +59,9 @@ router.post('/api/login', (req, res) => {
         )
     }
 
-    token = 
+    token =
 
-    res.send('Login');
+        res.send('Login');
 });
 
 export default router;

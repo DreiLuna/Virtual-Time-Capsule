@@ -4,10 +4,10 @@ const app = express();
 // Import the route files
 import userRoutes from './routes/users.js'
 
-app.use('/user', userRoutes);
+app.use('/api/users', userRoutes);
 
 app.get("/", (req, res) => {
-    res.send("Hello world");
+    res.send("Hello World!");
 });
 
 
