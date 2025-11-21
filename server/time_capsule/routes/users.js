@@ -1,11 +1,11 @@
 import { Router } from 'express';
 import { validationResult, matchedData, checkSchema } from 'express-validator'
 import jwt from 'jsonwebtoken';
-import { hashPassword } from '../utils/helpers';
-import { userValidationSchema } from '../utils/validationSchemas';
+import { hashPassword } from '../utils/helpers.js';
+import { userValidationSchema } from '../utils/validationSchemas.js';
 
 // Temp imports
-import {demoData} from '../utils/demoData'
+// import {demoData} from '../utils/demoData.js'
 const SECRET_KEY = process.env.SECRET_KEY || 'your-secret-key';
 const users = [
     { id: 1, username: 'user1', password: 'password123' },
@@ -26,7 +26,7 @@ router.post('/api/register', checkSchema(userValidationSchema), (req, res) => {
 
 
     // Hash password
-    pw_hash = 0;
+    const pw_hash = 0;
 
     // Create new user
     const newUser = {
@@ -38,6 +38,7 @@ router.post('/api/register', checkSchema(userValidationSchema), (req, res) => {
 
     // Add user to database
 
+    // Successful response
     res.status(201).send(newUser); // 201 means resource created
 });
 
@@ -48,8 +49,7 @@ router.post('/api/login', checkSchema(userValidationSchema), (req, res) => {
     if (!result.isEmpty()) return res.status(400).send({ errors: result.array() });
 
     const data = matchedData(req);
-
-    // Query for user info
+    // Query database for user info
 
     // If user found and password matches
     if (data.username === user.username && data.password === user.password) {
