@@ -1,18 +1,9 @@
-import { useState } from 'react'
-import { Routes, Route, useNavigate } from 'react-router-dom'
-
-
-//^ Importing assets/pages
+import { useNavigate } from 'react-router-dom'
 import VTC_logo from '../assets/VTC_logo.png'
-
-import Login from './Login'
-
-//$ importing css
 import '../css/Landing.css'
 
-function Landing() {
-  const [count, setCount] = useState(0)
-  const navigate = useNavigate()
+export default function Landing() {
+  const navigate = useNavigate();
 
   return (
     <>
@@ -32,14 +23,3 @@ function Landing() {
     </>
   )
 }
-
-function App() {
-  return (
-    <Routes>
-      <Route path="/" element={<Landing />} />
-      <Route path="/login" element={<Login />} />
-    </Routes>
-  )
-}
-
-export default App

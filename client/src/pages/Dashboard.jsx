@@ -1,31 +1,39 @@
 import { useAuth } from "../auth/AuthContext";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Upload, X } from 'lucide-react';
 import { createPortal } from 'react-dom';
-
-//^ importing assets
-import photo1 from "../assets/temp/photo1.jpg"
-import photo2 from"../assets/temp/photo2.jpg"
-import photo3 from"../assets/temp/photo3.jpg"
-import photo4 from"../assets/temp/photo4.jpg"
-const images = [
-      photo1,
-      photo2,
-      photo3,
-      photo4
-  ];
-const capsuleName = "New Capsule"
-
-//$ importing css
 import "../css/dashboard.css"
 
 export default function Dashboard() {
-  const { user, logout } = useAuth();
+  const { user, logout, token } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [title, setTitle] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
   const [preview, setPreview] = useState(null);
   const [uploading, setUploading] = useState(false);
+  const [images, setImages] = useState([]);
+
+  useEffect(() => {
+    fetchImages();
+  }, []);
+
+//fetch images from backend, only images belonging to token will be fetched
+  const fetchImages = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/api/images', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setImages(data.images); // assuming data.images is an array of image URLs
+      }
+    } catch (error) {
+      console.error('Error fetching images:', error);
+    }
+  };
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
@@ -51,17 +59,21 @@ export default function Dashboard() {
     formData.append('image', selectedFile);
 
     try {
-      const response = await fetch('/api/upload-image', {
+      const response = await fetch('http://localhost:5000/api/images/upload', {
         method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
         body: formData,
       });
 
       if (response.ok) {
         alert('Image uploaded successfully!');
         handleClose();
-        // refresh your image list here
+        fetchImages(); // refresh your image list here
       } else {
-        alert('Upload failed. Please try again.');
+        const data = await response.json();
+        alert(data.message || 'Upload failed. Please try again.');
       }
     } catch (error) {
       console.error('Upload error:', error);
@@ -79,37 +91,6 @@ export default function Dashboard() {
   };
 
   return (
-    // <div className="main">
-    //   <nav className = "navbar">
-
-    //   {/* //title */}
-    //   <ul className="title">
-
-    //     <h1 className="topTitle">Welcome, {user?.name}!</h1>
-    //     <i><h5 className="underTitle">
-    //     This is a protected page. Only visible when authenticated.
-    //     </h5></i>
-
-    //   </ul>
-    //   {/* //button */}
-    //   <button onClick={logout} className="logoutbtn">Log out</button>
-
-    //   </nav>
-
-
-    //   <div className="content">
-    //     <div className="capsuleDiv">
-    //       {images.map((src, index) => (
-    //         <div className="seperateCapsules">
-    //           <img key={index} src={src} alt={`Image ${index}`}/>
-    //           <h2>{capsuleName}</h2>
-    //         </div>
-    //     ))}
-    //     </div>
-    //   </div>
-      
-    // </div>
-
     <>
       {isOpen && createPortal(
         <div className="modal-overlay">
@@ -172,7 +153,7 @@ export default function Dashboard() {
           <ul className="title">
             <h1 className="topTitle">Welcome, {user?.name}!</h1>
             <i><h5 className="underTitle">
-              This is a protected page. Only visible when authenticated.
+              Your Virtual Time Capsule
             </h5></i>
           </ul>
 
@@ -186,18 +167,22 @@ export default function Dashboard() {
 
         <div className="content">
           <div className="capsuleDiv">
-            {images.map((src, index) => (
+            {images.length == 0 ? (
+              <p style = {{ textAlign: 'center', color: '#999', padding: '40px' }}>
+                No images uploaded yet. Click "Upload New Image" to add to your time capsule!
+                </p>
+            ) : (
+              images.map((image, index) => (
               <div className="seperateCapsules" key={index}>
-                <img src={src} alt={`Image ${index}`}/>
-                <h2>{capsuleName}</h2>
+                <img src={image.url || image.src} alt={image.title || `Image ${index}`}/>
+                <h2>{image.title}</h2>
               </div>
-            ))}
+              ))
+            )}
           </div>
         </div>
       </div>
     </>
-
-    
   );
 }
 
