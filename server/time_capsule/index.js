@@ -4,12 +4,8 @@ const app = express();
 // Import the route files
 import userRoutes from './routes/users.js'
 
+app.use(express.json());
 app.use('/api/users', userRoutes);
-
-app.get("/", (req, res) => {
-    res.send("Hello World!");
-});
-
 
 // Run backend
 const port = process.env.PORT || 3000;
