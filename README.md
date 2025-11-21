@@ -12,6 +12,9 @@ Note: replace proxy in package.json file and implement CORS when deploying
 - [node.js](https://nodejs.org/en)
 - npm install
   
+## TESTING
+- in client repo, run 'npm test'
+
 ## React Compiler
 
 The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).

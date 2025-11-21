@@ -1,70 +1,101 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useMemo, useState, useEffect} from "react";
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    const raw = localStorage.getItem("demo_user");
-    return raw ? JSON.parse(raw) : null;
-  });
-  const [token, setToken] = useState(() => localStorage.getItem("demo_token"));
-  
-  async function postRequest(url, data) {
-    // Sending data to backend
-    const response = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    });
-    // Parse JSON data from response
-    const result = await response.json();
-    // Checks for valid response
-    if (!response.ok) {
-      return {error: result.message || "Request failed"}
+  //stores user info
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  //Check for existing session
+  useEffect(() => {
+    const storedUser = localStorage.getItem('auth_user');
+    const storedToken = localStorage.getItem('auth_token');
+
+    if (storedUser && storedToken) {
+      setUser(JSON.parse(storedUser));
+      setToken(storedToken);
     }
-    // Returns parsed JSON data
-    return result
-  }
+    setLoading  (false);
+  }, []);
 
-  async function register(email, password) {
-    const data = postRequest("http://localhost:5000/register", { email, password })
-    console.log(data.message)
-    return data
-  }
+  //send data to backend
+  const register = async (email, password) => {
+    try {
+      const response = await fetch('http://localhost:5000/register', {
+        method: 'POST', 
+        headers: {'Context-Type': 'application/json'},
+        body: JSON.stringify({ email, password }),
+      });
 
-  async function login(email, password) {
-    const result = await postRequest("http://localhost:5000/login", { email, password })
-    if (result.error) {
-      return result
+      const data = await response.json();
+
+      if (!response.ok) {
+        return { error: data.message || 'Registration failed' };
+      }
+
+      //auto-login after registration
+      const { token: accessToken, user: userData} = data;
+      setToken(accessToken);
+      setUser(userData);
+      localStorage.setItem('auth_token', accessToken);
+      localStorage.setItem('auth_user', JSON.stringify(userData));
+
+      return {success: true};
+
+  } catch (error) {
+      return { error: 'Network error' };
     }
-    setToken(result.access_token);
-    console.log(result.access_token)
-    localStorage.setItem()
+  };
 
-    // Fake login API (replace with real fetch to your backend)
-    // Demo check
-    // if (email === "demo@site.com" && password === "password123") {
-    //   const fakeToken = "demo.jwt.token";
-    //   const demoUser = { id: 1, email, name: "Demo User" };
-    //   setUser(demoUser);
-    //   setToken(fakeToken);
-    //   localStorage.setItem("demo_user", JSON.stringify(demoUser));
-    //   localStorage.setItem("demo_token", fakeToken);
-    //   return { ok: true };
-    // }
+  const login = async (email, password) => {
+    try {
+      const response = await fetch('http://localhost:5000/login', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ email, password }),
+      });
 
-  }
+      const data = await response.json();
 
-  function logout() {
+      if (!response.ok) {
+        return { error: data.message || 'Login failed' };
+      }
+
+      //if successful, store token and user data in state and localStorage
+      const { token: accessToken, user: userData } = data;
+      setToken(accessToken);
+      setUser(userData);
+      localStorage.setItem('auth_token', accessToken);
+      localStorage.setItem('auth_user', JSON.stringify(userData));
+      return { success: true };
+
+    } catch (error) {
+      return { error: 'Network error' };
+    }
+  };
+
+  const logout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem("demo_user");
-    localStorage.removeItem("demo_token");
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('auth_user');
+  };
+
+  const value = useMemo(
+    () => ({user, token, register, login, logout, isAuthed: !!token }),
+    [user, token]
+  );
+
+  if (loading) {
+    return (
+      <div style ={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+        Loading...
+      </div>
+    );
   }
 
-  const value = useMemo(() => ({ user, token, register, login, logout, isAuthed: !!token }), [user, token]);
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
