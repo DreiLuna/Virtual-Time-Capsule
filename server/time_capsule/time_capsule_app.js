@@ -1,8 +1,12 @@
-const express = require("express");
+import { Sequelize } from '@sequelize/core';
+import { PostgresDialect } from '@sequelize/postgres';
+
+
+import express from 'express';
 const app = express();
 
 // Import the route files
-const userRoutes = require('./routes/users');
+import userRoutes from './routes/users.js'
 
 app.get("/", (req, res) => {
     res.send("Hello world");
@@ -15,3 +19,15 @@ app.listen(port, () => console.log(`Listening on ${port}...`));
 // app.post("/register", (req, res) => {
 
 // });
+
+export const sequelize = new Sequelize({
+  dialect: PostgresDialect,
+  database: 'virtualTimeCapsule',
+  user: 'postgres',
+  password: 'mysecretpassword',
+  host: 'localhost',
+  port: 5432,
+  ssl: true,
+  clientMinMessages: 'notice',
+});
+

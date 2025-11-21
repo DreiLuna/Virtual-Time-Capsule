@@ -24,10 +24,5 @@ If you are developing a production application, we recommend using TypeScript wi
 
 
 ## Database
-https://www.postgresql.org/docs/current/tutorial-createdb.html
-on mac run 
-brew install postgresql@18
-brew info postgresql@18
-make sure u run it if it doesnt
-
-createdb virtualTimeCapsule
+docker pull postgres:18.1
+docker run --name virtualTimeCapsuleDB -e POSTGRES_PASSWORD=mysecretpassword -d postgres:18.1 -p 5432:5432
