@@ -1,7 +1,3 @@
-import { Sequelize } from '@sequelize/core';
-import { PostgresDialect } from '@sequelize/postgres';
-
-
 import express from 'express';
 const app = express();
 
@@ -20,9 +16,16 @@ app.listen(port, () => console.log(`Listening on ${port}...`));
 
 // });
 
+
+
+import { Sequelize, Model, DataTypes } from 'sequelize';
+
+
+
+
 export const sequelize = new Sequelize({
-  dialect: PostgresDialect,
-  database: 'virtualTimeCapsule',
+  dialect: 'postgres',
+  database: 'postgres',
   user: 'postgres',
   password: 'mysecretpassword',
   host: 'localhost',
@@ -31,3 +34,20 @@ export const sequelize = new Sequelize({
   clientMinMessages: 'notice',
 });
 
+class User extends Model {}
+User.init(
+  {
+    username: DataTypes.STRING,
+    birthday: DataTypes.DATE,
+  },
+  { sequelize, modelName: 'user' },
+);
+
+(async () => {
+  await sequelize.sync();
+  const jane = await User.create({
+    username: 'janedoe',
+    birthday: new Date(1980, 6, 20),
+  });
+  console.log(jane.toJSON());
+})();
