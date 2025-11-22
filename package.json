@@ -8,5 +8,9 @@
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
   }
 }
