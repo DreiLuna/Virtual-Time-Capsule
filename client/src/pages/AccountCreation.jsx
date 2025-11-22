@@ -5,7 +5,7 @@ import house_icon from "../assets/house_icon.png"
 import "../css/Landing.css"
 
 export default function AccountCreation() {
-  const {register} = useAuth();
+  const { register } = useAuth();
   const navigate = useNavigate();
 
   const [form, setForm] = useState({
@@ -19,15 +19,15 @@ export default function AccountCreation() {
   const [showPw, setShowPw] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value} = e.target;
-    setForm({ ...form, [name]: value});
+    const { name, value } = e.target;
+    setForm({ ...form, [name]: value });
     setError("");
   }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-//CHECK FOR VALIDATION
+    //CHECK FOR VALIDATION
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
       setError("Please enter a valid email.");
       return;
@@ -63,11 +63,11 @@ export default function AccountCreation() {
   return (
     <div className="center">
       <div>
-        <img 
-          src={house_icon} 
-          className="logo House" 
-          alt="logo" 
-          onClick={() => navigate('/')} 
+        <img
+          src={house_icon}
+          className="logo House"
+          alt="logo"
+          onClick={() => navigate('/')}
           style={{ cursor: 'pointer' }}
         />
       </div>
@@ -98,16 +98,16 @@ export default function AccountCreation() {
             placeholder="••••••••"
             autoComplete="current-password"
           />
-        <label className="label">Confirm password</label>
-        <input
-          name="confirmPassword"
-          type={showPw ? "text" : "password"}
-          value={form.confirmPassword}
-          onChange={handleChange}
-          className="input"
-          placeholder="••••••••"
-          autoComplete="new-password"
-        />
+          <label className="label">Confirm password</label>
+          <input
+            name="confirmPassword"
+            type={showPw ? "text" : "password"}
+            value={form.confirmPassword}
+            onChange={handleChange}
+            className="input"
+            placeholder="••••••••"
+            autoComplete="new-password"
+          />
           <button
             type="button"
             onClick={() => setShowPw(!showPw)}
@@ -120,13 +120,13 @@ export default function AccountCreation() {
         <button disabled={loading} className="btn" style={{ marginTop: '5px' }}>
           {loading ? "Creating…" : "Create Account"}
         </button>
-        
+
         <div style={{ marginTop: 12 }}>
           <small>
             Already have an account?{" "}
-            <button 
-              type="button" 
-              className="link-like" 
+            <button
+              type="button"
+              className="link-like"
               onClick={() => navigate("/login")}
             >
               Sign in
