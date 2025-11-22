@@ -24,16 +24,15 @@ router.post('/api/register', checkSchema(userValidationSchema), (req, res) => {
     const data = matchedData(req);
     // Check if username is unique
 
-
     // Hash password
-    const pw_hash = 0;
-
+    data.password = hashPassword(data.password);
+    console.log(data.password);
     // Create new user
     const newUser = {
         id:
             users.length + 1,
         username: data.username,
-        password: pw_hash
+        password: data.password
     };
 
     // Add user to database
