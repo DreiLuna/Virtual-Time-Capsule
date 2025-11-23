@@ -5,6 +5,9 @@ import '../css/Landing.css'
 export default function Landing() {
   const navigate = useNavigate();
 
+  // Check cookie to see if user is logged in or not.
+  
+
   return (
     <>
       <div>

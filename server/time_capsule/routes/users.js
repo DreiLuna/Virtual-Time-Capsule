@@ -1,11 +1,10 @@
 import { Router } from 'express';
 import { validationResult, matchedData, checkSchema } from 'express-validator'
-import jwt from 'jsonwebtoken';
 import { hashPassword } from '../utils/helpers.js';
 import { userValidationSchema } from '../utils/validationSchemas.js';
 
 // Temp imports
-import { fakeUsers, SECRET_KEY } from '../utils/demoData.js'
+import { fakeUsers } from '../utils/demoData.js'
 import passport from 'passport';
 
 const router = Router();
@@ -43,14 +42,22 @@ router.post('/api/auth', checkSchema(userValidationSchema), passport.authenticat
     if (!result.isEmpty()) return res.status(400).send({ errors: result.array() });
 
     const data = matchedData(req);
-    console.log(data.username);
 
-    res.status(200).send("Logged in");
+    res.sendStatus(200);
+});
+
+router.get('/api/auth/status', (req, res) => {
+    return req.user ? res.send(req.user) : res.sendStatus(401);
 });
 
 router.post('/api/auth/logout', (req, res) => {
-    if (!req.user) return res.sendStatus(400);
-    return res.sendStatus(200);
+    if (!req.user) return res.sendStatus(401);
+    
+    req.logout((err) => {
+        if (err) return res.sendStatus(400);
+        res.sendStatus(200);
+        console.log("Done");
+    })
 });
 
 export default router;
