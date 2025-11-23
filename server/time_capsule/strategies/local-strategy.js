@@ -3,21 +3,19 @@ import { Strategy } from "passport-local";
 import { fakeUsers } from "../utils/demoData.js"
 import { comparePassword } from "../utils/helpers.js";
 
-// Used with sessions (not currently implemented)
-// passport.serializeUser((user, done) => {
-//     done(null, user.id);
-// });
+passport.serializeUser((user, done) => {
+    done(null, user.username);
+});
 
-// passport.deserializeUser((id, done) => {
-//     try {
-//         const findUser = fakeUsers.find((user) => user.id === id);
-//         if (!findUser) throw new Error("User not found");
-//         done(null, findUser);
-//     } catch (err) {
-//         done(err, null); 
-//     }
-// });
-// End
+passport.deserializeUser((username, done) => {
+    try {
+        const findUser = fakeUsers.find((user) => user.username === username);
+        if (!findUser) throw new Error("User not found");
+        done(null, findUser);
+    } catch (err) {
+        done(err, null); 
+    }
+});
 
 export default passport.use(
     new Strategy((username, password, done) => {
