@@ -101,7 +101,7 @@ export default function Login() {
             <button
               type="button"
               className="link-like"
-              onClick={() => navigate("/signup")}
+              onClick={() => navigate("/dashboard")}
             >
               Create account
             </button>
