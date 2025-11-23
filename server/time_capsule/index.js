@@ -3,7 +3,6 @@ import passport from 'passport';
 import "./strategies/local-strategy.js"
 import cookieParser from "cookie-parser";
 import session from "express-session";
-//import { Sequelize, Model, DataTypes, Utils } from 'sequelize';
 const app = express();
 
 // Import the route files

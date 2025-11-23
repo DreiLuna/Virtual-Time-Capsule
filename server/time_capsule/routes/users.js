@@ -16,7 +16,7 @@ router.post('/api/users', checkSchema(userValidationSchema), (req, res) => {
     if (!result.isEmpty()) return res.status(400).send({ errors: result.array() });
 
     const data = matchedData(req);
-    // Check if username is unique
+    console.log(data.email);
 
     // Hash password
     data.password = hashPassword(data.password);
@@ -24,7 +24,7 @@ router.post('/api/users', checkSchema(userValidationSchema), (req, res) => {
     const newUser = {
         id:
             fakeUsers.length + 1,
-        username: data.username,
+        username: data.email,
         password: data.password
     };
 
@@ -43,6 +43,7 @@ router.post('/api/auth', checkSchema(userValidationSchema), passport.authenticat
 
     const data = matchedData(req);
 
+    console.log(data);
     res.sendStatus(200);
 });
 

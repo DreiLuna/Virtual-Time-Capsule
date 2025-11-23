@@ -1,6 +1,5 @@
 import { Sequelize, Model, DataTypes, Utils } from 'sequelize';
 
-
 export const sequelize = new Sequelize({
   dialect: 'postgres',
   database: 'postgres',
