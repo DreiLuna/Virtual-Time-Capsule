@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
   //send data to backend
   const register = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:3000/api/register', {
+      const response = await fetch('http://localhost:3000/api/users', {
         method: 'POST', 
         headers: {'Context-Type': 'application/json'},
         body: JSON.stringify({ email, password }),
@@ -57,7 +57,8 @@ export function AuthProvider({ children }) {
       });
 
       const data = await response.json();
-
+      console.log('test');
+      console.log(data);
       if (!response.ok) {
         return { error: data.message || 'Login failed' };
       }
