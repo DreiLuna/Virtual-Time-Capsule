@@ -1,47 +1,129 @@
-import express from 'express';
-import passport, { Passport } from 'passport';
-import "./strategies/local-strategy.js"
 import { Sequelize, Model, DataTypes, Utils } from 'sequelize';
-const app = express();
-
-// Import the route files
-import userRoutes from './routes/users.js'
-import { Strategy } from 'passport-local';
-
-app.use(express.json());
-
-app.use(passport.initialize());
-app.use(userRoutes);
-
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on ${port}...`));
 
 
-// export const sequelize = new Sequelize({
-//   dialect: 'postgres',
-//   database: 'postgres',
-//   user: 'postgres',
-//   password: 'mysecretpassword',
-//   host: 'localhost',
-//   port: 5432,
-//   ssl: true,
-//   clientMinMessages: 'notice',
-// });
+export const sequelize = new Sequelize({
+  dialect: 'postgres',
+  database: 'postgres',
+  user: 'postgres',
+  password: 'mysecretpassword',
+  host: 'localhost',
+  port: 5432,
+  ssl: true,
+  clientMinMessages: 'notice',
+});
 
-// class User extends Model {}
-// User.init(
-//   {
-//     username: DataTypes.STRING,
-//     birthday: DataTypes.DATE,
-//   },
-//   { sequelize, modelName: 'user' },
-// );
+//user authentication table
+class User extends Model {}
+User.init(
+  {
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    email: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: false,
+        validate: {isEmail: true}
+    },
+    passwordHash: {
+        type: DataTypes.STRING,
+        allowNull: false
+    },
+  },
+  { sequelize, modelName: 'User' },
+);
+
+// file storage table
+class File extends Model {}
+File.init(
+{
+    id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+    },
+    userId:{
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    fileName: {
+        type:DataTypes.STRING,
+        allowNull: false,
+    },
+    kdfName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    },
+    iterations: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+    },
+    salt: {
+        type: DataTypes.TEXT,       // base64
+        allowNull: false,
+    },
+    nonce: {
+        type: DataTypes.TEXT,       // base64
+        allowNull: false,
+    },
+    aad: {
+        type: DataTypes.TEXT,       // base64
+        allowNull: true,
+    },
+    ciphertext: {
+        type: DataTypes.TEXT,       // base64 of ct
+        allowNull: false,
+    },
+    expiresAt: {
+        type: DataTypes.DATE,
+        allowNull: true,
+    }, 
+},
+    {sequelize, modelName: 'File' },
+);
+
+// Associations
+User.hasMany(File, { foreignKey: "userId", as: "files" });
+File.belongsTo(User, { foreignKey: "userId", as: "user" });
 
 // (async () => {
 //   await sequelize.sync();
 //   const jane = await User.create({
-//     username: 'janedoe',
-//     birthday: new Date(1980, 6, 20),
+//     email: 'testemail@gmail.com',
+//     passwordHash: 'veryrandompasswordhash',
 //   });
 //   console.log(jane.toJSON());
 // })();
+(async () => {
+  try {
+    await sequelize.sync();
+
+    // Create a test user (or replace with an existing userId)
+    const user = await User.create({
+      email: 'filetestuser@gmail.com',
+      passwordHash: 'randomhash123',
+    });
+
+    console.log("User created:", user.toJSON());
+
+    // Insert a test file under that user
+    const file = await File.create({
+      userId: user.id,
+      fileName: "testFile.txt",
+      kdfName: "pbkdf2-sha256",
+      iterations: 200000,
+      salt: Buffer.from("salt123").toString("base64"),
+      nonce: Buffer.from("nonce123").toString("base64"),
+      aad: Buffer.from("metadata").toString("base64"),
+      ciphertext: Buffer.from("ciphertext123").toString("base64"),
+      expiresAt: null,
+    });
+
+    console.log("File created:", file.toJSON());
+
+  } catch (err) {
+    console.error("Error inserting file:", err);
+  }
+})();

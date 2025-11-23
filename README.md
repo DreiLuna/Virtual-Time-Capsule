@@ -27,4 +27,4 @@ If you are developing a production application, we recommend using TypeScript wi
 
 ## Database
 docker pull postgres:18.1
-docker run --name virtualTimeCapsuleDB -e POSTGRES_PASSWORD=mysecretpassword -d postgres:18.1 -p 5432:5432
+docker run --name virtualTimeCapsuleDB -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 -d postgres:18.1
