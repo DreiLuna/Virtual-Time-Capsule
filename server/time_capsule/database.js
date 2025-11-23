@@ -25,7 +25,7 @@ User.init(
         type: DataTypes.STRING,
         unique: true,
         allowNull: false,
-        validate: {isEmail: true}
+        //validate: {isEmail: true}
     },
     passwordHash: {
         type: DataTypes.STRING,
@@ -88,6 +88,8 @@ File.init(
 User.hasMany(File, { foreignKey: "userId", as: "files" });
 File.belongsTo(User, { foreignKey: "userId", as: "user" });
 
+export { User, File};
+
 // (async () => {
 //   await sequelize.sync();
 //   const jane = await User.create({
@@ -96,34 +98,34 @@ File.belongsTo(User, { foreignKey: "userId", as: "user" });
 //   });
 //   console.log(jane.toJSON());
 // })();
-(async () => {
-  try {
-    await sequelize.sync();
+// (async () => {
+//   try {
+//     await sequelize.sync();
 
-    // Create a test user (or replace with an existing userId)
-    const user = await User.create({
-      email: 'filetestuser@gmail.com',
-      passwordHash: 'randomhash123',
-    });
+//     // Create a test user (or replace with an existing userId)
+//     const user = await User.create({
+//       email: 'filetestuser@gmail.com',
+//       passwordHash: 'randomhash123',
+//     });
 
-    console.log("User created:", user.toJSON());
+//     console.log("User created:", user.toJSON());
 
-    // Insert a test file under that user
-    const file = await File.create({
-      userId: user.id,
-      fileName: "testFile.txt",
-      kdfName: "pbkdf2-sha256",
-      iterations: 200000,
-      salt: Buffer.from("salt123").toString("base64"),
-      nonce: Buffer.from("nonce123").toString("base64"),
-      aad: Buffer.from("metadata").toString("base64"),
-      ciphertext: Buffer.from("ciphertext123").toString("base64"),
-      expiresAt: null,
-    });
+//     // Insert a test file under that user
+//     const file = await File.create({
+//       userId: user.id,
+//       fileName: "testFile.txt",
+//       kdfName: "pbkdf2-sha256",
+//       iterations: 200000,
+//       salt: Buffer.from("salt123").toString("base64"),
+//       nonce: Buffer.from("nonce123").toString("base64"),
+//       aad: Buffer.from("metadata").toString("base64"),
+//       ciphertext: Buffer.from("ciphertext123").toString("base64"),
+//       expiresAt: null,
+//     });
 
-    console.log("File created:", file.toJSON());
+//     console.log("File created:", file.toJSON());
 
-  } catch (err) {
-    console.error("Error inserting file:", err);
-  }
-})();
+//   } catch (err) {
+//     console.error("Error inserting file:", err);
+//   }
+// })();
