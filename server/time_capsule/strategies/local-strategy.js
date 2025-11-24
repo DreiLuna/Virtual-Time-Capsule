@@ -8,30 +8,18 @@ passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-<<<<<<< HEAD
-=======
-// passport.deserializeUser((username, done) => {
-//     try {
-//         const findUser = fakeUsers.find((user) => user.username === username);
-//         if (!findUser) throw new Error("User not found");
-//         done(null, findUser);
-//     } catch (err) {
-//         done(err, null);
-//     }
-// });
->>>>>>> 401b3844cb87e8e4ed1e9a99dac3bb91eeacdb5c
 passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findByPk(id); // look up user by their primary key
+    try {
+        const user = await User.findByPk(id); // look up user by their primary key
 
-    if (!user) {
-      return done(new Error("User not found"), null);
+        if (!user) {
+            return done(new Error("User not found"), null);
+        }
+
+        return done(null, user); // attaches user to req.user
+    } catch (err) {
+        return done(err, null);
     }
-
-    return done(null, user); // attaches user to req.user
-  } catch (err) {
-    return done(err, null);
-  }
 });
 
 export default passport.use(
