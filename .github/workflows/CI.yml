@@ -1,0 +1,33 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps: 
+    - name: Checkout Repo
+      uses: actions/checkout@v4
+      
+    - name: Setup Nodejs
+      uses: actions/setup-node@v4
+      with:
+        node-version: '18'
+        cache: 'npm'
+      
+    - name: Install Dependencies
+      uses: npm install --workspaces --include-workspace-root
+
+    - name: Run backend test
+      uses: npm run test:server
+
+    - name: Run frontend test
+      uses: npm --workspace client run test
+
+    - name: build frontend
+      uses: npm --workspace client run build
