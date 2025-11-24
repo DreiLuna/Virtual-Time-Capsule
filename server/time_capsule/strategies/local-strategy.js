@@ -4,49 +4,24 @@ import { fakeUsers } from "../utils/demoData.js";
 import { comparePassword } from "../utils/helpers.js";
 import { User, File, sequelize } from "../database.js";
 
-// passport.serializeUser((user, done) => {
-//     done(null, user.username);
-// });
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-// passport.deserializeUser((username, done) => {
-//     try {
-//         const findUser = fakeUsers.find((user) => user.username === username);
-//         if (!findUser) throw new Error("User not found");
-//         done(null, findUser);
-//     } catch (err) {
-//         done(err, null);
-//     }
-// });
 passport.deserializeUser(async (id, done) => {
-  try {
-    const user = await User.findByPk(id); // look up user by their primary key
+    try {
+        const user = await User.findByPk(id); // look up user by their primary key
 
-    if (!user) {
-      return done(new Error("User not found"), null);
+        if (!user) {
+            return done(new Error("User not found"), null);
+        }
+
+        return done(null, user); // attaches user to req.user
+    } catch (err) {
+        return done(err, null);
     }
-
-    return done(null, user); // attaches user to req.user
-  } catch (err) {
-    return done(err, null);
-  }
 });
 
-// export default passport.use(
-//     new Strategy(async (username, password, done) => {
-//         try {
-//             // Query database for user info
-//             const findUser = await User.findOne({ where: { email: username } });
-//             if (!findUser) throw new Error("User not found");
-//             if (!comparePassword(password, findUser.passwordHash)) throw new Error("Invalid Credentials");
-//             done(null, findUser);
-//         } catch (err) {
-//             done(err, null);
-//         }
-//     })
-// );
 export default passport.use(
   new Strategy({ usernameField: "email" }, async (email, password, done) => {
     try {
