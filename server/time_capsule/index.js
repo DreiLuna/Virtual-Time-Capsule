@@ -8,7 +8,7 @@ import { sequelize } from "./database.js";
 const app = express();
 
 // Import the route files
-import userRoutes from './routes/users.js'
+import routes from './routes/index.js'
 
 app.use(express.json());
 app.use(cookieParser());
@@ -23,7 +23,9 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(userRoutes);
+
+// Access routes
+app.use(routes);
 
 // Sets session cookie when a user visits the homepage
 app.get("/", (req, res) => {

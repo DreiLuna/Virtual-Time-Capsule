@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { validationResult, matchedData, checkSchema } from 'express-validator'
+import { validationResult, matchedData, checkSchema } from 'express-validator';
 import { hashPassword } from '../utils/helpers.js';
 import { userValidationSchema } from '../utils/validationSchemas.js';
 import {User, File, sequelize} from '../database.js';

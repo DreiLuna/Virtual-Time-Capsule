@@ -23,13 +23,13 @@ export function AuthProvider({ children }) {
   //send data to backend
   const register = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:5000/register', {
+      const response = await fetch('http://localhost:3000/api/users', {
         method: 'POST', 
         headers: {'Context-Type': 'application/json'},
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      const data = response.ok;
 
       if (!response.ok) {
         return { error: data.message || 'Registration failed' };
@@ -48,17 +48,16 @@ export function AuthProvider({ children }) {
       return { error: 'Network error' };
     }
   };
-
   const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:5000/login', {
+      const response = await fetch('http://localhost:3000/api/auth', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
-
+      const data = response.ok;
+      console.log(data);
       if (!response.ok) {
         return { error: data.message || 'Login failed' };
       }
