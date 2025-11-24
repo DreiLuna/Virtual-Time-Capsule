@@ -54,8 +54,6 @@ router.post('/api/auth', checkSchema(userValidationSchema), passport.authenticat
     if (!result.isEmpty()) return res.status(400).send({ errors: result.array() });
 
     const data = matchedData(req);
-    console.log(data.session());
-
     res.sendStatus(200);
 });
 
