@@ -54,15 +54,15 @@ export function AuthProvider({ children }) {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = response.ok;
-      console.log(data);
       if (!response.ok) {
         return { error: data.message || "Login failed" };
       }
-
+          const data = await response.json();
+          console.log(data);
       // If successful, store user data in state and localStorage
-      if (data.message === "Login successful!" && data.user) {
+      if (data.message === "Login successful!") {
         setUser(data.user);
+
         localStorage.setItem("auth_user", JSON.stringify(data.user));
         return { success: true };
       } else {
