@@ -23,11 +23,11 @@ jobs:
     - name: Install Dependencies
       run: npm install --workspaces --include-workspace-root
 
-    - name: Run backend test
-      run: npm run test:server
-
     - name: Run frontend test
       run: npm --workspace client run test
+
+    - name: Run backend test
+      run: npm run test:server
 
     - name: build frontend
       run: npm --workspace client run build
