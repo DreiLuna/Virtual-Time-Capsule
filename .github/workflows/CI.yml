@@ -21,13 +21,13 @@ jobs:
         cache: 'npm'
       
     - name: Install Dependencies
-      runs: npm install --workspaces --include-workspace-root
+      run: npm install --workspaces --include-workspace-root
 
     - name: Run backend test
-      runs: npm run test:server
+      run: npm run test:server
 
     - name: Run frontend test
-      runs: npm --workspace client run test
+      run: npm --workspace client run test
 
     - name: build frontend
-      runs: npm --workspace client run build
+      run: npm --workspace client run build
