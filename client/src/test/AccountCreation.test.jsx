@@ -3,21 +3,24 @@ import { describe, it, expect } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "../auth/AuthContext";
 import AccountCreation from "../pages/AccountCreation.jsx";
-
+import React from "react";
 //helper function for to render with providers
 function renderWithProviders(ui) {
   return render(
-    <AuthProvider>
-      <BrowserRouter>{ui}</BrowserRouter>
-    </AuthProvider>,
+    <BrowserRouter>
+      <AuthProvider>{ui}</AuthProvider>
+    </BrowserRouter>
   );
 }
 
 describe("Creation Page", () => {
   it("renders creation form", () => {
     renderWithProviders(<AccountCreation />);
-    const heading = screen.getAllByText("Create Account");
-    expect(heading[1]).toBeInTheDocument();
+    const heading = screen.getByRole("heading", {
+      name: /create account/i,
+    });
+
+    expect(heading).toBeInTheDocument();
   });
 
   it("shows email and password inputs", () => {

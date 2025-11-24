@@ -3,6 +3,7 @@ import { describe, it, expect } from "vitest";
 import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "../auth/AuthContext";
 import Login from "../pages/Login.jsx";
+import React from "react";
 
 //helper function for to render with providers
 function renderWithProviders(ui) {
