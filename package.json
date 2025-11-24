@@ -1,10 +1,22 @@
 {
-  "name": "time-capsule-app",
+  "name": "virtual-time-capsule-monorepo",
+  "private": true,
+  "version": "1.0.0",
+  "workspaces": [
+    "client",
+    "server/time_capsule"
+  ],
   "scripts": {
-    "start": "concurrently \"npm run start-frontend\" \"npm run start-backend\"",
-    "start-frontend": "npm --prefix ./client run dev",
-    "start-backend": "npm --prefix ./server/time_capsule run start:dev",
-    "postinstall": "cd ./client && npm install && cd .././server/time_capsule && npm install"
+    "dev:client": "npm --workspace client run dev",
+    "build:client": "npm --workspace client run build",
+    "lint:client": "npm --workspace client run lint",
+    "preview:client": "npm --workspace client run preview",
+
+    "dev:server": "npm --workspace server/time_capsule run start:dev",
+    "test:server": "npm --workspace server/time_capsule run test",
+    "install:all": "npm install --workspaces --include-workspace-root",
+
+    "start": "concurrently \"npm run dev:client\" \"npm run dev:server\""
   },
   "devDependencies": {
     "concurrently": "^9.2.1"

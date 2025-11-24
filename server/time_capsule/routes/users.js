@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { Router } from 'express';
 import { validationResult, matchedData, checkSchema } from 'express-validator';
 import { hashPassword } from '../utils/helpers.js';
@@ -9,17 +10,82 @@ import { createUserHandler } from '../handlers/users.js';
 const router = Router();
 
 router.post('/api/users', checkSchema(userValidationSchema), createUserHandler);
+=======
+import { Router } from "express";
+import { validationResult, matchedData, checkSchema } from "express-validator";
+import { hashPassword } from "../utils/helpers.js";
+import { userValidationSchema } from "../utils/validationSchemas.js";
+import { User, File, sequelize } from "../database.js";
 
-router.post('/api/auth', checkSchema(userValidationSchema), passport.authenticate("local"), (req, res) => {
-    // Input validation result
-    const result = validationResult(req);
-    // Error handling
-    if (!result.isEmpty()) return res.status(400).send({ errors: result.array() });
+// Temp imports
+import { fakeUsers } from "../utils/demoData.js";
+import passport from "passport";
 
-    const data = matchedData(req);
-    res.sendStatus(200);
+const router = Router();
+
+router.post(
+  "/register",
+  checkSchema(userValidationSchema),
+  async (req, res) => {
+    try {
+      // Input validation result
+      const result = validationResult(req);
+      if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+      }
+
+      const data = matchedData(req); // e.g. { username, password }
+
+      // Hash password
+      const hashed = hashPassword(data.password);
+
+      // Add user to database
+      const newUser = await User.create({
+        email: data.email,
+        passwordHash: hashed,
+      });
+
+      // Successful response (do NOT send passwordHash)
+      res.status(201).json({
+        id: newUser.id,
+        email: newUser.email,
+        createdAt: newUser.createdAt,
+      });
+    } catch (err) {
+      console.error("Error creating user:", err);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
+>>>>>>> 401b3844cb87e8e4ed1e9a99dac3bb91eeacdb5c
+
+router.post("/login", checkSchema(userValidationSchema), (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return next(err);
+    if (!user) {
+      return res.status(400).json({ message: info?.message || "Login failed" });
+    }
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      // Optionally, send user info (never send passwordHash)
+      return res.json({
+        message: "Login successful!",
+        user: { id: user.id, email: user.email },
+      });
+    });
+  })(req, res, next);
 });
 
+router.post("/logout", (req, res) => {
+  if (!req.user) return res.sendStatus(401);
+
+  req.logout((err) => {
+    if (err) return res.sendStatus(400);
+    res.sendStatus(200);
+  });
+});
+
+<<<<<<< HEAD
 router.get('/api/auth/status', (req, res) => {
     return req.user ? res.send(req.user) : res.sendStatus(401);
 });
@@ -35,3 +101,6 @@ router.post('/api/auth/logout', (req, res) => {
 });
 
 export default router;
+=======
+export default router;
+>>>>>>> 401b3844cb87e8e4ed1e9a99dac3bb91eeacdb5c

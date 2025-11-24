@@ -3,11 +3,13 @@
 This module handles all encryption and decryption for the Virtual Time Capsule project.
 
 ## Files
-- encrypt_decrypt.py    facilitates aead and kdf and creates a JSON envelope format that can be stored/sent
-- kdf.py                derives key used for encryption from password using PBKDF2 (might switch to argon2id in the future)
-- aead.py               uses AES-GCM encryption to encrypt file
+
+- encrypt_decrypt.py facilitates aead and kdf and creates a JSON envelope format that can be stored/sent
+- kdf.py derives key used for encryption from password using PBKDF2 (might switch to argon2id in the future)
+- aead.py uses AES-GCM encryption to encrypt file
 
 ## Usage
+
 ```python
 from crypto.encrypt_decrypt import encrypt_blob, decrypt_blob
 
