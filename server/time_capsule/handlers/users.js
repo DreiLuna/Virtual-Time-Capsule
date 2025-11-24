@@ -17,7 +17,7 @@ export const createUserHandler = async (req, res) => {
 
         // Add user to database
         const newUser = await User.create({
-            email: data.username,     // or data.email if that's how you validate it
+            email: data.email,
             passwordHash: hashed,
         });
 
