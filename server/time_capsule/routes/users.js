@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { validationResult, matchedData, checkSchema } from 'express-validator'
+import { validationResult, matchedData, checkSchema } from 'express-validator';
 import { hashPassword } from '../utils/helpers.js';
 import { userValidationSchema } from '../utils/validationSchemas.js';
 
@@ -41,9 +41,6 @@ router.post('/api/auth', checkSchema(userValidationSchema), passport.authenticat
     // Error handling
     if (!result.isEmpty()) return res.status(400).send({ errors: result.array() });
 
-    const data = matchedData(req);
-
-    console.log(data);
     res.sendStatus(200);
 });
 

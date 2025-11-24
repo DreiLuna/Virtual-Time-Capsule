@@ -8,7 +8,7 @@ import "../css/Landing.css"
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: ""});
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
@@ -22,7 +22,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-//CHECK FOR VALIDATOIN
+    //CHECK FOR VALIDATOIN
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
       setError("Please enter a valid email.");
       return;
@@ -48,12 +48,12 @@ export default function Login() {
   return (
     <div className="center">
       <div>
-        <img 
-        src={house_icon} 
-        className="logo House" 
-        alt="logo" onClick={() => 
-        navigate('/')} 
-        style={{ cursor: 'pointer' }}
+        <img
+          src={house_icon}
+          className="logo House"
+          alt="logo" onClick={() =>
+            navigate('/')}
+          style={{ cursor: 'pointer' }}
         />
       </div>
 
@@ -98,10 +98,10 @@ export default function Login() {
         <div style={{ marginTop: 12 }}>
           <small>
             New here?{" "}
-            <button 
-            type="button" 
-            className="link-like" 
-            onClick={() => navigate("/signup")}
+            <button
+              type="button"
+              className="link-like"
+              onClick={() => navigate("/dashboard")}
             >
               Create account
             </button>
