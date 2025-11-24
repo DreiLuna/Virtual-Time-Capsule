@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import house_icon from "../assets/house_icon.png"
-import "../css/Landing.css"
+import house_icon from "../assets/house_icon.png";
+import "../css/Landing.css";
 
 export default function AccountCreation() {
   const { register } = useAuth();
@@ -22,7 +22,7 @@ export default function AccountCreation() {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
     setError("");
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -49,7 +49,7 @@ export default function AccountCreation() {
     }
 
     setLoading(true);
-    const result = await auth2.register(form.email, form.password);
+    const result = await register(form.email, form.password);
     setLoading(false);
 
     if (result.error) {
@@ -67,8 +67,8 @@ export default function AccountCreation() {
           src={house_icon}
           className="logo House"
           alt="logo"
-          onClick={() => navigate('/')}
-          style={{ cursor: 'pointer' }}
+          onClick={() => navigate("/")}
+          style={{ cursor: "pointer" }}
         />
       </div>
       <form onSubmit={handleSubmit} className="card">
@@ -117,7 +117,7 @@ export default function AccountCreation() {
           </button>
         </div>
 
-        <button disabled={loading} className="btn" style={{ marginTop: '5px' }}>
+        <button disabled={loading} className="btn" style={{ marginTop: "5px" }}>
           {loading ? "Creating…" : "Create Account"}
         </button>
 

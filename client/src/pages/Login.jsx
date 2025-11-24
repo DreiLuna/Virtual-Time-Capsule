@@ -1,9 +1,8 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import house_icon from "../assets/house_icon.png"
-import "../css/Landing.css"
+import house_icon from "../assets/house_icon.png";
+import "../css/Landing.css";
 
 export default function Login() {
   const { login } = useAuth();
@@ -37,11 +36,10 @@ export default function Login() {
     const result = await login(form.email, form.password);
     setLoading(false);
 
-    if (result.error) {
-      setError(result.message || "Login failed.");
-      return;
-    } else {
+    if (result.success) {
       navigate("/dashboard");
+    } else {
+      setError(result.message || result.error || "Login failed.");
     }
   };
 
@@ -51,9 +49,9 @@ export default function Login() {
         <img
           src={house_icon}
           className="logo House"
-          alt="logo" onClick={() =>
-            navigate('/')}
-          style={{ cursor: 'pointer' }}
+          alt="logo"
+          onClick={() => navigate("/")}
+          style={{ cursor: "pointer" }}
         />
       </div>
 
@@ -91,7 +89,7 @@ export default function Login() {
           </button>
         </div>
 
-        <button disabled={loading} className="btn" style={{ marginTop: '5px' }}>
+        <button disabled={loading} className="btn" style={{ marginTop: "5px" }}>
           {loading ? "Signing in…" : "Sign in"}
         </button>
 
@@ -101,7 +99,7 @@ export default function Login() {
             <button
               type="button"
               className="link-like"
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/signup")}
             >
               Create account
             </button>

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "test": "jest",
-    "start:dev": "nodemon ./time_capsule_app"
+    "start:dev": "nodemon ./index.js"
   },
   "keywords": [],
   "author": "",
@@ -17,6 +17,7 @@
   "dependencies": {
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
     "express-validator": "^7.3.1",

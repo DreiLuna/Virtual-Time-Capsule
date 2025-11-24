@@ -1,14 +1,14 @@
-import { Sequelize, Model, DataTypes, Utils } from 'sequelize';
+import { Sequelize, Model, DataTypes, Utils } from "sequelize";
 
 export const sequelize = new Sequelize({
-  dialect: 'postgres',
-  database: 'postgres',
-  user: 'postgres',
-  password: 'mysecretpassword',
-  host: 'localhost',
+  dialect: "postgres",
+  database: "postgres",
+  username: "postgres",
+  password: "mysecretpassword",
+  host: "localhost",
   port: 5432,
   ssl: true,
-  clientMinMessages: 'notice',
+  clientMinMessages: "notice",
 });
 
 //user authentication table
@@ -16,78 +16,112 @@ class User extends Model {}
 User.init(
   {
     id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
     email: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false,
-        //validate: {isEmail: true}
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
+      //validate: {isEmail: true}
     },
     passwordHash: {
-        type: DataTypes.STRING,
-        allowNull: false
+      type: DataTypes.STRING,
+      allowNull: false,
     },
   },
-  { sequelize, modelName: 'User' },
+  { sequelize, modelName: "User" },
 );
 
 // file storage table
 class File extends Model {}
 File.init(
-{
+  {
     id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true,
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
     },
-    userId:{
-        type: DataTypes.INTEGER,
-        allowNull: false,
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     fileName: {
-        type:DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     kdfName: {
-    type: DataTypes.STRING,
-    allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     iterations: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      type: DataTypes.INTEGER,
+      allowNull: false,
     },
     salt: {
-        type: DataTypes.TEXT,       // base64
-        allowNull: false,
+      type: DataTypes.TEXT, // base64
+      allowNull: false,
     },
     nonce: {
-        type: DataTypes.TEXT,       // base64
-        allowNull: false,
+      type: DataTypes.TEXT, // base64
+      allowNull: false,
     },
     aad: {
-        type: DataTypes.TEXT,       // base64
-        allowNull: true,
+      type: DataTypes.TEXT, // base64
+      allowNull: true,
     },
     ciphertext: {
-        type: DataTypes.TEXT,       // base64 of ct
-        allowNull: false,
+      type: DataTypes.TEXT, // base64 of ct
+      allowNull: false,
     },
     expiresAt: {
-        type: DataTypes.DATE,
-        allowNull: true,
-    }, 
-},
-    {sequelize, modelName: 'File' },
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
+  },
+  { sequelize, modelName: "File" },
 );
 
 // Associations
 User.hasMany(File, { foreignKey: "userId", as: "files" });
 File.belongsTo(User, { foreignKey: "userId", as: "user" });
 
-export { User, File};
+// Image model for uploaded images
+class Image extends Model {}
+Image.init(
+  {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
+    filename: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
+    title: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+    },
+    createdAt: {
+      type: DataTypes.DATE,
+      allowNull: false,
+      defaultValue: DataTypes.NOW,
+    },
+  },
+  { sequelize, modelName: "Image" },
+);
+
+User.hasMany(Image, { foreignKey: "userId", as: "images" });
+Image.belongsTo(User, { foreignKey: "userId", as: "user" });
+
+export { User, File, Image };
+
 
 // (async () => {
 //   await sequelize.sync();
