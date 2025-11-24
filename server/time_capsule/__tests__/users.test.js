@@ -13,9 +13,9 @@ jest.mock('express-validator', () => ({
     })),
 }));
 
-jest.mock('../utils.helper.js', () => ({
-    hashPassword: jest.fn((password) => `hashed${password}`),
-}));
+// jest.mock('../utils.helper.js', () => ({
+//     hashPassword: jest.fn((password) => `hashed${password}`),
+// }));
 
 describe('create users', () => {
     const mockRequest = {};
