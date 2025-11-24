@@ -1,19 +1,11 @@
 import { Sequelize, Model, DataTypes, Utils } from "sequelize";
 
 export const sequelize = new Sequelize({
-<<<<<<< HEAD
-  dialect: 'postgres',
-  database: 'postgres',
-  username: 'postgres',
-  password: 'mysecretpassword',
-  host: 'localhost',
-=======
   dialect: "postgres",
   database: "postgres",
   username: "postgres",
   password: "mysecretpassword",
   host: "localhost",
->>>>>>> 401b3844cb87e8e4ed1e9a99dac3bb91eeacdb5c
   port: 5432,
   ssl: true,
   clientMinMessages: "notice",
