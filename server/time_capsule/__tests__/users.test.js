@@ -39,6 +39,5 @@ describe('create users', () => {
     //     await createUserHandler(mockRequest, mockResponse);
     //     expect(validator.matchedData).toHaveBeenCalledWith(mockRequest);
     //     expect(helpers.hashPassword).toHaveBeenCalledWith("password");
-
     // }
 });
