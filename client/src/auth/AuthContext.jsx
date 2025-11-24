@@ -27,7 +27,7 @@ export function AuthProvider({ children }) {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
+      const data = response.ok;
 
       if (!response.ok) {
         return { error: data.message || "Registration failed" };
@@ -54,8 +54,8 @@ export function AuthProvider({ children }) {
         body: JSON.stringify({ email, password }),
       });
 
-      const data = await response.json();
-
+      const data = response.ok;
+      console.log(data);
       if (!response.ok) {
         return { error: data.message || "Login failed" };
       }
