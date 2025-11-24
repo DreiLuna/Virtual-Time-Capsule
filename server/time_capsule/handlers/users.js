@@ -3,18 +3,17 @@ import { hashPassword } from '../utils/helpers.js';
 import { User } from '../database.js';
 
 export const createUserHandler = async (req, res) => {
+    // Input validation result
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+    }
+
+    const data = matchedData(req); // e.g. { username, password }
+
+    // Hash password
+    const hashed = hashPassword(data.password);
     try {
-        // Input validation result
-        const result = validationResult(req);
-        if (!result.isEmpty()) {
-            return res.status(400).json({ errors: result.array() });
-        }
-
-        const data = matchedData(req); // e.g. { username, password }
-
-        // Hash password
-        const hashed = hashPassword(data.password);
-
         // Add user to database
         const newUser = await User.create({
             email: data.email,
