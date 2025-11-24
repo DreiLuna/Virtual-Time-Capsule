@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState, useEffect} from "react";
+import { createContext, useContext, useMemo, useState, useEffect } from "react";
 
 const AuthContext = createContext(null);
 
@@ -10,87 +10,101 @@ export function AuthProvider({ children }) {
 
   //Check for existing session
   useEffect(() => {
-    const storedUser = localStorage.getItem('auth_user');
-    const storedToken = localStorage.getItem('auth_token');
-
-    if (storedUser && storedToken) {
+    const storedUser = localStorage.getItem("auth_user");
+    if (storedUser) {
       setUser(JSON.parse(storedUser));
-      setToken(storedToken);
     }
-    setLoading  (false);
+    setLoading(false);
   }, []);
 
   //send data to backend
   const register = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:5000/register', {
-        method: 'POST', 
-        headers: {'Context-Type': 'application/json'},
+      const response = await fetch("http://localhost:3001/api/users/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        return { error: data.message || 'Registration failed' };
+        return { error: data.message || "Registration failed" };
       }
 
       //auto-login after registration
-      const { token: accessToken, user: userData} = data;
+      const { token: accessToken, user: userData } = data;
       setToken(accessToken);
       setUser(userData);
-      localStorage.setItem('auth_token', accessToken);
-      localStorage.setItem('auth_user', JSON.stringify(userData));
+      localStorage.setItem("auth_token", accessToken);
+      localStorage.setItem("auth_user", JSON.stringify(userData));
 
-      return {success: true};
-
-  } catch (error) {
-      return { error: 'Network error' };
+      return { success: true };
+    } catch (error) {
+      return { error: "Network error" };
     }
   };
-
   const login = async (email, password) => {
     try {
-      const response = await fetch('http://localhost:5000/login', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
+      const response = await fetch("http://localhost:3001/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // important for session/cookie auth!
         body: JSON.stringify({ email, password }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        return { error: data.message || 'Login failed' };
+        return { error: data.message || "Login failed" };
       }
 
-      //if successful, store token and user data in state and localStorage
-      const { token: accessToken, user: userData } = data;
-      setToken(accessToken);
-      setUser(userData);
-      localStorage.setItem('auth_token', accessToken);
-      localStorage.setItem('auth_user', JSON.stringify(userData));
-      return { success: true };
-
+      // If successful, store user data in state and localStorage
+      if (data.message === "Login successful!" && data.user) {
+        setUser(data.user);
+        localStorage.setItem("auth_user", JSON.stringify(data.user));
+        return { success: true };
+      } else {
+        return { error: data.message || "Login failed" };
+      }
     } catch (error) {
-      return { error: 'Network error' };
+      return { error: "Network error" };
     }
   };
 
-  const logout = () => {
+  const logout = async (navigate) => {
+    try {
+      await fetch("http://localhost:3001/api/users/logout", {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (e) {
+      // Ignore network errors on logout
+    }
     setUser(null);
     setToken(null);
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('auth_user');
+    localStorage.removeItem("auth_token");
+    localStorage.removeItem("auth_user");
+    if (navigate) navigate("/login");
   };
 
+
   const value = useMemo(
-    () => ({user, token, register, login, logout, isAuthed: !!token }),
-    [user, token]
+    () => ({ user, token, register, login, logout, isAuthed: !!user }),
+    [user, token],
   );
 
   if (loading) {
     return (
-      <div style ={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh'}}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
         Loading...
       </div>
     );

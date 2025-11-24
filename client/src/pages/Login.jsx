@@ -1,14 +1,13 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
-import house_icon from "../assets/house_icon.png"
-import "../css/Landing.css"
+import house_icon from "../assets/house_icon.png";
+import "../css/Landing.css";
 
 export default function Login() {
   const { login } = useAuth();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: "", password: ""});
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [showPw, setShowPw] = useState(false);
@@ -22,7 +21,7 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-//CHECK FOR VALIDATOIN
+    //CHECK FOR VALIDATOIN
     if (!form.email || !/\S+@\S+\.\S+/.test(form.email)) {
       setError("Please enter a valid email.");
       return;
@@ -37,23 +36,22 @@ export default function Login() {
     const result = await login(form.email, form.password);
     setLoading(false);
 
-    if (result.error) {
-      setError(result.message || "Login failed.");
-      return;
-    } else {
+    if (result.success) {
       navigate("/dashboard");
+    } else {
+      setError(result.message || result.error || "Login failed.");
     }
   };
 
   return (
     <div className="center">
       <div>
-        <img 
-        src={house_icon} 
-        className="logo House" 
-        alt="logo" onClick={() => 
-        navigate('/')} 
-        style={{ cursor: 'pointer' }}
+        <img
+          src={house_icon}
+          className="logo House"
+          alt="logo"
+          onClick={() => navigate("/")}
+          style={{ cursor: "pointer" }}
         />
       </div>
 
@@ -91,17 +89,17 @@ export default function Login() {
           </button>
         </div>
 
-        <button disabled={loading} className="btn" style={{ marginTop: '5px' }}>
+        <button disabled={loading} className="btn" style={{ marginTop: "5px" }}>
           {loading ? "Signing in…" : "Sign in"}
         </button>
 
         <div style={{ marginTop: 12 }}>
           <small>
             New here?{" "}
-            <button 
-            type="button" 
-            className="link-like" 
-            onClick={() => navigate("/signup")}
+            <button
+              type="button"
+              className="link-like"
+              onClick={() => navigate("/signup")}
             >
               Create account
             </button>

@@ -1,70 +1,74 @@
-import { Router } from 'express';
-import { validationResult, matchedData, checkSchema } from 'express-validator'
-import jwt from 'jsonwebtoken';
-import { hashPassword } from '../utils/helpers.js';
-import { userValidationSchema } from '../utils/validationSchemas.js';
+import { Router } from "express";
+import { validationResult, matchedData, checkSchema } from "express-validator";
+import { hashPassword } from "../utils/helpers.js";
+import { userValidationSchema } from "../utils/validationSchemas.js";
+import { User, File, sequelize } from "../database.js";
 
 // Temp imports
-// import {demoData} from '../utils/demoData.js'
-const SECRET_KEY = process.env.SECRET_KEY || 'your-secret-key';
-const users = [
-    { id: 1, username: 'user1', password: 'password123' },
-    { id: 2, username: 'user2', password: 'password123' },
-    { id: 3, username: 'user3', password: 'password123' }
-];
+import { fakeUsers } from "../utils/demoData.js";
+import passport from "passport";
 
 const router = Router();
 
-router.post('/api/register', checkSchema(userValidationSchema), (req, res) => { 
-    // Input validation result
-    const result = validationResult(req);
-    // Error handling
-    if (!result.isEmpty()) return res.status(400).send({ errors: result.array() });
+router.post(
+  "/register",
+  checkSchema(userValidationSchema),
+  async (req, res) => {
+    try {
+      // Input validation result
+      const result = validationResult(req);
+      if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
+      }
 
-    const data = matchedData(req);
-    // Check if username is unique
+      const data = matchedData(req); // e.g. { username, password }
 
+      // Hash password
+      const hashed = hashPassword(data.password);
 
-    // Hash password
-    const pw_hash = 0;
+      // Add user to database
+      const newUser = await User.create({
+        email: data.email,
+        passwordHash: hashed,
+      });
 
-    // Create new user
-    const newUser = {
-        id:
-            users.length + 1,
-        username: data.username,
-        password: pw_hash
-    };
+      // Successful response (do NOT send passwordHash)
+      res.status(201).json({
+        id: newUser.id,
+        email: newUser.email,
+        createdAt: newUser.createdAt,
+      });
+    } catch (err) {
+      console.error("Error creating user:", err);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  },
+);
 
-    // Add user to database
-
-    // Successful response
-    res.status(201).send(newUser); // 201 means resource created
+router.post("/login", checkSchema(userValidationSchema), (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return next(err);
+    if (!user) {
+      return res.status(400).json({ message: info?.message || "Login failed" });
+    }
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      // Optionally, send user info (never send passwordHash)
+      return res.json({
+        message: "Login successful!",
+        user: { id: user.id, email: user.email },
+      });
+    });
+  })(req, res, next);
 });
 
-router.post('/api/login', checkSchema(userValidationSchema), (req, res) => {
-    // Input validation result
-    const result = validationResult(req);
-    // Error handling
-    if (!result.isEmpty()) return res.status(400).send({ errors: result.array() });
+router.post("/logout", (req, res) => {
+  if (!req.user) return res.sendStatus(401);
 
-    const data = matchedData(req);
-    // Query database for user info
-
-    // If user found and password matches
-    if (data.username === user.username && data.password === user.password) {
-        // Create token
-        const token = jwt.sign(
-            {
-                userId: user.id, 
-
-            }
-        )
-    }
-
-    token =
-
-        res.send('Login');
+  req.logout((err) => {
+    if (err) return res.sendStatus(400);
+    res.sendStatus(200);
+  });
 });
 
 export default router;
