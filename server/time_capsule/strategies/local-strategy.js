@@ -4,22 +4,10 @@ import { fakeUsers } from "../utils/demoData.js"
 import { comparePassword } from "../utils/helpers.js";
 import {User, File, sequelize} from '../database.js';
 
-// passport.serializeUser((user, done) => {
-//     done(null, user.username);
-// });
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
-// passport.deserializeUser((username, done) => {
-//     try {
-//         const findUser = fakeUsers.find((user) => user.username === username);
-//         if (!findUser) throw new Error("User not found");
-//         done(null, findUser);
-//     } catch (err) {
-//         done(err, null); 
-//     }
-// });
 passport.deserializeUser(async (id, done) => {
   try {
     const user = await User.findByPk(id);  // look up user by their primary key
@@ -34,19 +22,6 @@ passport.deserializeUser(async (id, done) => {
   }
 });
 
-// export default passport.use(
-//     new Strategy(async (username, password, done) => {
-//         try {
-//             // Query database for user info
-//             const findUser = await User.findOne({ where: { email: username } });
-//             if (!findUser) throw new Error("User not found");
-//             if (!comparePassword(password, findUser.passwordHash)) throw new Error("Invalid Credentials");
-//             done(null, findUser);
-//         } catch (err) {
-//             done(err, null);
-//         }
-//     })
-// );
 export default passport.use(
   new Strategy(async (username, password, done) => {
     try {

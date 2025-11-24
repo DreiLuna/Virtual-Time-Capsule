@@ -1,0 +1,19 @@
+name: JS CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+    
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps: 
+    - name: Checkout respository
+      uses: actions/checkout@v3
+    - name: Install Dependencies
+      run: npm install
+    - name: Run Tests
+      run: npm test
