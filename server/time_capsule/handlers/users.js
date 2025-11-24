@@ -6,7 +6,7 @@ export const createUserHandler = async (req, res) => {
     // Input validation result
     const result = validationResult(req);
     if (!result.isEmpty()) {
-        return res.status(400).json({ errors: result.array() });
+        return res.status(400).send(result.array());
     }
 
     const data = matchedData(req); // e.g. { username, password }
