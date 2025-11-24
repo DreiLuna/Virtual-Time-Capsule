@@ -3,6 +3,8 @@ import passport from 'passport';
 import "./strategies/local-strategy.js"
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import { sequelize } from "./database.js";
+
 const app = express();
 
 // Import the route files
@@ -32,4 +34,25 @@ app.get("/", (req, res) => {
 })
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Listening on ${port}...`));
+
+async function startServer() {
+    try {
+        // 1. Check DB connection
+        await sequelize.authenticate();
+        console.log("Connected to the database");
+
+        // 2. Sync models (create tables if needed)
+        await sequelize.sync();   // use { alter: true } in dev if needed
+        console.log(" Models synced");
+
+        // 3. Start the server only after DB is ready
+        app.listen(port, () =>
+            console.log(` Server running on port ${port}...`)
+        );
+    } catch (err) {
+        console.error("Failed to start server:", err);
+        process.exit(1);
+    }
+}
+
+startServer();
