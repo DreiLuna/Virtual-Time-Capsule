@@ -65,9 +65,18 @@ export default function Dashboard() {
       });
 
       if (response.ok) {
+        const data = await response.json();
+        // Add the newly uploaded image to the UI immediately
+        if (data && data.image) {
+          // cache-bust the immediate image URL so browser doesn't reuse a 404 cached response
+          const img = { ...data.image, url: `${data.image.url}?t=${Date.now()}` };
+          setImages(prev => [img, ...prev]);
+        } else {
+          // fallback: re-fetch images from server
+          fetchImages();
+        }
         alert("Image uploaded successfully!");
         handleClose();
-        // Optionally, fetch images again if you implement listing
       } else {
         const data = await response.json();
         alert(data.message || "Upload failed. Please try again.");

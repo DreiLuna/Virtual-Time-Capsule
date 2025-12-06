@@ -14,7 +14,7 @@ app.use("/uploads", express.static(path.resolve("uploads")));
 // CORS setup for frontend on Vite (localhost:5173)
 import cors from "cors";
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "http://localhost:8080",
   credentials: true,
 }));
 

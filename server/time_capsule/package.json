@@ -23,6 +23,7 @@
     "express-validator": "^7.3.1",
     "jsonwebtoken": "^9.0.2",
     "multer": "^2.0.2",
+    "buffer-from": "^1.1.1",
     "passport": "^0.7.0",
     "passport-local": "^1.0.0",
     "pg": "^8.16.3",

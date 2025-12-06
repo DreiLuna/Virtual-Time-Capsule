@@ -1,14 +1,27 @@
 import { Sequelize, Model, DataTypes, Utils } from "sequelize";
 
+// Read DB connection info from environment variables so the app can connect
+// to a Postgres container when running under Docker Compose. Defaults keep
+// local development working without setting env vars.
+const {
+  DB_DIALECT = "postgres",
+  DB_NAME = "postgres",
+  DB_USER = "postgres",
+  DB_PASS = "mysecretpassword",
+  DB_HOST = "db",
+  DB_PORT = 5432,
+  DB_SSL = "false",
+} = process.env;
+
 export const sequelize = new Sequelize({
-  dialect: "postgres",
-  database: "postgres",
-  username: "postgres",
-  password: "mysecretpassword",
-  host: "localhost",
-  port: 5432,
-  ssl: true,
-  clientMinMessages: "notice",
+  dialect: DB_DIALECT,
+  database: DB_NAME,
+  username: DB_USER,
+  password: DB_PASS,
+  host: DB_HOST,
+  port: Number(DB_PORT),
+  logging: false,
+  dialectOptions: DB_SSL === "true" ? { ssl: { rejectUnauthorized: false } } : undefined,
 });
 
 //user authentication table

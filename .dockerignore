@@ -1,0 +1,8 @@
+node_modules
+.git
+.vscode
+*.log
+.env
+dist
+client/node_modules
+server/node_modules
