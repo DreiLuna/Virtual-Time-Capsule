@@ -11,6 +11,7 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@google-cloud/vision": "^5.3.4",
     "@tailwindcss/vite": "^4.1.17",
     "lucide-react": "^0.548.0",
     "react": "^19.1.1",
@@ -20,6 +21,8 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.36.0",
+    "@testing-library/jest-dom": "^x.x.x",
+    "@testing-library/react": "^x.x.x",
     "@types/react": "^19.1.16",
     "@types/react-dom": "^19.1.9",
     "@vitejs/plugin-react": "^5.0.4",
@@ -27,12 +30,9 @@
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.22",
     "globals": "^16.4.0",
+    "jsdom": "^x.x.x",
     "vite": "^7.1.7",
-    "vitest": "^x.x.x",
-    "@testing-library/react": "^x.x.x",
-    "@testing-library/jest-dom": "^x.x.x",
-    "jsdom": "^x.x.x"
+    "vitest": "^x.x.x"
   },
   "proxy": "http://localhost:5000"
 }
-

@@ -3,13 +3,11 @@
 _IMPORTANT_
 Always run in root directory, i.e. Virtual-Time-Capsule
 
-During testing use 'npm start' to test the website.
+Run using docker compose up --build
 To exit, press Ctrl + C
 
-Note: replace proxy in package.json file and implement CORS when deploying
-
 ## INSTALLS _REQUIRED_
-
+- Docker
 - [node.js](https://nodejs.org/en)
 - npm install
 
