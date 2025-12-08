@@ -5,6 +5,7 @@ import Landing from "./pages/Landing";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AccountCreation from "./pages/AccountCreation";
+import { AI } from "./pages/AI";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="ai" element={<AI />} />
           <Route path="*" element={<Landing />} />
         </Routes>
       </AuthProvider>
