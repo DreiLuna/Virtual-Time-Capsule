@@ -11,12 +11,26 @@ const app = express();
 import path from "path";
 app.use("/uploads", express.static(path.resolve("uploads")));
 
-// CORS setup for frontend on Vite (localhost:5173)
+// CORS setup for frontend
 import cors from "cors";
-app.use(cors({
-  origin: "http://localhost:8080",
-  credentials: true,
-}));
+
+// Allow multiple frontend origins
+const allowedOrigins = ("http://localhost:8080,http://localhost:5173")
+  .split(",")
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      // allow requests with no origin
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) return callback(null, true);
+      return callback(new Error("CORS policy: origin not allowed"));
+    },
+    credentials: true,
+  }),
+);
 
 import userRoutes from "./routes/users.js";
 import imagesRoutes from "./routes/images.js";
