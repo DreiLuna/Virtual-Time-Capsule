@@ -289,48 +289,85 @@ export default function Dashboard() {
           </button>
         </nav>
 
-        <div className="content">
-          <div className="capsuleDiv">
+        <div className="content" style={{ paddingTop: "150px" }}>
+          <div style={{ width: "100%", maxWidth: "1200px", margin: "0 auto" }}>    
             {lockedUntil && lockedUntil > now ? (
-              <div style={{ textAlign: "center", padding: 40 }}>
-                <h2>Time Capsule Locked</h2>
-                <p style={{ color: "#666" }}>
+              <div style={{     
+                  display: "flex", 
+                  flexDirection: "column", 
+                  alignItems: "center", 
+                  justifyContent: "center",
+                  padding: 40,
+                  minHeight: "400px",
+                  textAlign: "center"}}>
+                <div style={{ fontSize: "80px", marginBottom: "20px" }}>🔒</div>
+                <h2 style={{ margin: "0 0 16px 0" }}>Time Capsule Locked</h2>
+                <p style={{ color: "#666", fontSize: "18px", margin: "0 0 24px 0" }}>
                   Remaining: {formatRemaining(lockedUntil - now)}
                 </p>
-                <div style={{ marginTop: 12 }}>
-                  <button
-                    onClick={() => {
-                      // unlock early
-                      if (confirm("Unlock the capsule now?")) {
-                        setLockedUntil(null);
-                        try {
-                          localStorage.removeItem("vtc_lock_until");
-                        } catch (e) {}
-                      }
-                    }}
-                    className="modal-btn-cancel"
-                  >
-                    Unlock Now
-                  </button>
-                </div>
+                <button
+                  onClick={() => {
+                    if (confirm("Unlock the capsule now?")) {
+                      setLockedUntil(null);
+                      try {
+                        localStorage.removeItem("vtc_lock_until");
+                      } catch (e) {}
+                    }
+                  }}
+                  className="modal-btn-cancel"
+                >
+                  Unlock Now
+                </button>
               </div>
             ) : images.length == 0 ? (
-              <p
-                style={{ textAlign: "center", color: "#999", padding: "40px" }}
-              >
-                No images uploaded yet. Click "Upload New Image" to add to your
-                time capsule!
-              </p>
+              <div style={{ 
+                display: "flex", 
+                flexDirection: "column", 
+                alignItems: "center", 
+                justifyContent: "center",
+                padding: "40px",
+                minHeight: "400px",
+                textAlign: "center"
+              }}>
+                <p style={{ 
+                  color: "#999", 
+                  fontSize: "18px",
+                  margin: 0
+                }}>
+                  No images uploaded yet. Click "Upload New Image" to add to your
+                  time capsule!
+                </p>
+              </div>
             ) : (
-              images.map((image, index) => (
-                <div className="seperateCapsules" key={index}>
-                  <img
-                    src={`http://localhost:3001${image.url}`}
-                    alt={image.title || `Image ${index}`}
-                  />
-                  <h2>{image.title}</h2>
-                </div>
-              ))
+              <div style={{ 
+                display: "grid", 
+                gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
+                gap: "20px",
+                padding: "20px",
+                width: "100%"
+              }}>
+                {images.map((image, index) => (
+                  <div key={index} style={{
+                    backgroundColor: "#2a2a2a",
+                    borderRadius: "12px",
+                    overflow: "hidden",
+                    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)"
+                  }}>
+                    <img
+                      src={`http://localhost:3001${image.url}`}
+                      alt={image.title || `Image ${index}`}
+                      style={{
+                        width: "100%",
+                        height: "250px",
+                        objectFit: "cover"
+                      }}
+                    />
+                    <div style={{ padding: "16px" }}>
+                      <h2 style={{ margin: 0, fontSize: "18px" }}>{image.title}</h2>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>
