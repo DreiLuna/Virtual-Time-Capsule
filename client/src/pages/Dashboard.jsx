@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { Upload, X, MessageCircle, Send } from "lucide-react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
+import puter from "@heyputer/puter.js";
 import "../css/dashboard.css";
 
 export default function Dashboard() {
@@ -184,28 +185,34 @@ export default function Dashboard() {
   };
 
   // Chatbot functions
-  const simulateBotResponse = (userMessage) => {
+  const extractText = (response) => {
+    if (!response || typeof response !== "object") return "No response received.";
+    const maybe = response;
+    const content = maybe.message?.content;
+    if (typeof content === "string") return content;
+    if (Array.isArray(content)) {
+      const first = content.find(part => typeof part === "string");
+      if (typeof first === "string") return first;
+    }
+    return JSON.stringify(content ?? response, null, 2);
+  };
+
+  const simulateBotResponse = async (userMessage) => {
     setIsTyping(true);
 
-    setTimeout(() => {
-      let response = "I'm here to help you with your time capsule!";
-
-      const msg = userMessage.toLowerCase();
-      if (msg.includes('upload') || msg.includes('add')) {
-        response = "To upload an image, click the 'Upload New Image' button at the top. You'll be able to add a title and select your photo!";
-      } else if (msg.includes('lock') || msg.includes('secure')) {
-        response = "You can lock your time capsule by clicking the '🔒 Lock Capsule' button. Choose how long you want it locked - minutes, hours, or days!";
-      } else if (msg.includes('download')) {
-        response = "To download all your memories, click the '📥 Download All' button. Your images will be packaged in a ZIP file!";
-      } else if (msg.includes('unlock')) {
-        response = "If your capsule is locked, you'll see an 'Unlock Now' button on the main screen to unlock it early.";
-      } else if (msg.includes('help') || msg.includes('how')) {
-        response = "I can help you with:\n• Uploading images\n• Locking your capsule\n• Downloading your memories\n• Understanding features\n\nWhat would you like to know more about?";
-      }
-
-      setMessages(prev => [...prev, { role: 'bot', text: response }]);
+    try {
+      const response = await puter.ai.chat(userMessage);
+      const text = extractText(response);
+      setMessages(prev => [...prev, { role: 'bot', text }]);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      setMessages(prev => [...prev, {
+        role: 'bot',
+        text: `Sorry, I encountered an error: ${errorMessage}`
+      }]);
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
   };
 
   const handleChatSend = () => {
