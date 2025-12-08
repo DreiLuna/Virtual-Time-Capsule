@@ -319,6 +319,10 @@ export default function Dashboard() {
           <button onClick={logout} className="logoutbtn">
             Log out
           </button>
+
+          <button onClick={() => navigate("../ai")} className="upload-btn">
+            AI
+          </button>
         </nav>
 
         <div className="content" style={{ paddingTop: "150px" }}>
