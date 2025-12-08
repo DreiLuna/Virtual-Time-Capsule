@@ -17,8 +17,8 @@ COPY . .
 
 # Expose the app port (adjust if your app reads APP_PORT)
 ENV NODE_ENV=production
-ENV PORT=3000
-EXPOSE 3000
+ENV PORT=3001
+EXPOSE 3001
 
 # Default command — change path if your server entry is elsewhere
 CMD ["node", "server/time_capsule/index.js"]
