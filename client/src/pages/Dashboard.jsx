@@ -353,7 +353,7 @@ export default function Dashboard() {
               position: 'fixed',
               bottom: '24px',
               right: '24px',
-              backgroundColor: '#6366f1',
+              backgroundColor: '#5675b8',
               color: 'white',
               borderRadius: '50%',
               padding: '16px',
@@ -379,7 +379,7 @@ export default function Dashboard() {
             right: 0,
             height: '100vh',
             width: '400px',
-            backgroundColor: 'white',
+            backgroundColor: '#3b3b3bff',
             boxShadow: '-4px 0 20px rgba(0,0,0,0.2)',
             transform: isChatOpen ? 'translateX(0)' : 'translateX(100%)',
             transition: 'transform 0.3s ease',
@@ -390,7 +390,7 @@ export default function Dashboard() {
         >
           {/* Chat Header */}
           <div style={{
-            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+            background: '#2a2a2a',
             color: 'white',
             padding: '16px',
             display: 'flex',
@@ -431,7 +431,7 @@ export default function Dashboard() {
             flex: 1,
             overflowY: 'auto',
             padding: '16px',
-            backgroundColor: '#f9fafb'
+            backgroundColor: '#353434ff'
           }}>
             {messages.map((msg, idx) => (
               <div
@@ -447,8 +447,8 @@ export default function Dashboard() {
                     maxWidth: '80%',
                     padding: '12px 16px',
                     borderRadius: '16px',
-                    backgroundColor: msg.role === 'user' ? '#6366f1' : 'white',
-                    color: msg.role === 'user' ? 'white' : '#1f2937',
+                    backgroundColor: msg.role === 'user' ? '#5675b8' : '#4e4e4eff',
+                    color: msg.role === 'user' ? 'white' : 'white',
                     borderBottomRightRadius: msg.role === 'user' ? '4px' : '16px',
                     borderBottomLeftRadius: msg.role === 'user' ? '16px' : '4px',
                     boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
@@ -465,7 +465,7 @@ export default function Dashboard() {
             {isTyping && (
               <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '16px' }}>
                 <div style={{
-                  backgroundColor: 'white',
+                  backgroundColor: '#4e4e4eff',
                   padding: '12px 16px',
                   borderRadius: '16px',
                   borderBottomLeftRadius: '4px',
@@ -475,7 +475,7 @@ export default function Dashboard() {
                     <div style={{
                       width: '8px',
                       height: '8px',
-                      backgroundColor: '#9ca3af',
+                      backgroundColor: 'white',
                       borderRadius: '50%',
                       animation: 'bounce 1.4s infinite ease-in-out both',
                       animationDelay: '0s'
@@ -483,7 +483,7 @@ export default function Dashboard() {
                     <div style={{
                       width: '8px',
                       height: '8px',
-                      backgroundColor: '#9ca3af',
+                      backgroundColor: 'white',
                       borderRadius: '50%',
                       animation: 'bounce 1.4s infinite ease-in-out both',
                       animationDelay: '0.16s'
@@ -491,7 +491,7 @@ export default function Dashboard() {
                     <div style={{
                       width: '8px',
                       height: '8px',
-                      backgroundColor: '#9ca3af',
+                      backgroundColor: 'white',
                       borderRadius: '50%',
                       animation: 'bounce 1.4s infinite ease-in-out both',
                       animationDelay: '0.32s'
@@ -505,8 +505,8 @@ export default function Dashboard() {
           {/* Input */}
           <div style={{
             padding: '16px',
-            backgroundColor: 'white',
-            borderTop: '1px solid #e5e7eb'
+            backgroundColor: '#2a2a2a',
+            borderTop: '1px solid #2a2a2a'
           }}>
             <div style={{ display: 'flex', gap: '8px' }}>
               <input
@@ -517,20 +517,20 @@ export default function Dashboard() {
                 placeholder="Type your message..."
                 style={{
                   flex: 1,
-                  border: '1px solid #d1d5db',
+                  border: '1px solid #3b3b3bff',
                   borderRadius: '24px',
                   padding: '12px 16px',
                   fontSize: '14px',
                   outline: 'none'
                 }}
-                onFocus={(e) => e.target.style.borderColor = '#6366f1'}
-                onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+                onFocus={(e) => e.target.style.borderColor = '#5675b8'}
+                onBlur={(e) => e.target.style.borderColor = '#3b3b3bff'}
               />
               <button
                 onClick={handleChatSend}
                 disabled={!chatInput.trim()}
                 style={{
-                  backgroundColor: chatInput.trim() ? '#6366f1' : '#d1d5db',
+                  backgroundColor: chatInput.trim() ? '#5675b8' : '#3b3b3bff',
                   color: 'white',
                   border: 'none',
                   borderRadius: '50%',
@@ -542,10 +542,10 @@ export default function Dashboard() {
                   transition: 'background-color 0.2s'
                 }}
                 onMouseOver={(e) => {
-                  if (chatInput.trim()) e.currentTarget.style.backgroundColor = '#4f46e5';
+                  if (chatInput.trim()) e.currentTarget.style.backgroundColor = '#5675b8';
                 }}
                 onMouseOut={(e) => {
-                  if (chatInput.trim()) e.currentTarget.style.backgroundColor = '#6366f1';
+                  if (chatInput.trim()) e.currentTarget.style.backgroundColor = '#5675b8';
                 }}
               >
                 <Send size={20} />
