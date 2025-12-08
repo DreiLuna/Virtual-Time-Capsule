@@ -1,6 +1,6 @@
 import { useAuth } from "../auth/AuthContext";
 import { useState, useEffect } from "react";
-import { Upload, X } from "lucide-react";
+import { Upload, X, MessageCircle, Send } from "lucide-react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import "../css/dashboard.css";
@@ -15,17 +15,24 @@ export default function Dashboard() {
   const [uploading, setUploading] = useState(false);
   const [images, setImages] = useState([]);
   const [lockedUntil, setLockedUntil] = useState(null);
-  const [lockValue, setLockValue] = useState(10); // default 10 minutes
+  const [lockValue, setLockValue] = useState(10);
   const [lockUnit, setLockUnit] = useState("minutes");
   const [now, setNow] = useState(Date.now());
   const navigate = useNavigate();
+
+  // Chatbot states
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [messages, setMessages] = useState([
+    { role: 'bot', text: 'Hi! How can I help you with your time capsule today?' }
+  ]);
+  const [chatInput, setChatInput] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
 
   useEffect(() => {
     fetchImages();
   }, []);
 
   useEffect(() => {
-    // load lock state from localStorage
     try {
       const stored = localStorage.getItem("vtc_lock_until");
       if (stored) {
@@ -42,18 +49,16 @@ export default function Dashboard() {
   }, []);
 
   useEffect(() => {
-    // heartbeat to update remaining time
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
   }, []);
 
   useEffect(() => {
-    // clear lock if expired
     if (lockedUntil && lockedUntil <= Date.now()) {
       setLockedUntil(null);
       try {
         localStorage.removeItem("vtc_lock_until");
-      } catch (e) {}
+      } catch (e) { }
     }
   }, [now, lockedUntil]);
 
@@ -70,7 +75,6 @@ export default function Dashboard() {
     return `${seconds}s`;
   };
 
-  //fetch images from backend, only images belonging to token will be fetched
   const fetchImages = async () => {
     try {
       const response = await fetch("http://localhost:3001/api/images", {
@@ -79,13 +83,12 @@ export default function Dashboard() {
 
       if (response.ok) {
         const data = await response.json();
-        setImages(data.images); // array of { url, filename }
+        setImages(data.images);
       }
     } catch (error) {
       console.error("Error fetching images:", error);
     }
   };
-
 
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
@@ -123,13 +126,10 @@ export default function Dashboard() {
 
       if (response.ok) {
         const data = await response.json();
-        // Add the newly uploaded image to the UI immediately
         if (data && data.image) {
-          // cache-bust the immediate image URL so browser doesn't reuse a 404 cached response
           const img = { ...data.image, url: `${data.image.url}?t=${Date.now()}` };
           setImages(prev => [img, ...prev]);
         } else {
-          // fallback: re-fetch images from server
           fetchImages();
         }
         alert("Image uploaded successfully!");
@@ -152,6 +152,7 @@ export default function Dashboard() {
     setSelectedFile(null);
     setPreview(null);
   };
+
   const handleDownloadAll = async () => {
     if (images.length === 0) {
       alert("No images to download!");
@@ -181,6 +182,47 @@ export default function Dashboard() {
       alert("Failed to download images");
     }
   };
+
+  // Chatbot functions
+  const simulateBotResponse = (userMessage) => {
+    setIsTyping(true);
+
+    setTimeout(() => {
+      let response = "I'm here to help you with your time capsule!";
+
+      const msg = userMessage.toLowerCase();
+      if (msg.includes('upload') || msg.includes('add')) {
+        response = "To upload an image, click the 'Upload New Image' button at the top. You'll be able to add a title and select your photo!";
+      } else if (msg.includes('lock') || msg.includes('secure')) {
+        response = "You can lock your time capsule by clicking the '🔒 Lock Capsule' button. Choose how long you want it locked - minutes, hours, or days!";
+      } else if (msg.includes('download')) {
+        response = "To download all your memories, click the '📥 Download All' button. Your images will be packaged in a ZIP file!";
+      } else if (msg.includes('unlock')) {
+        response = "If your capsule is locked, you'll see an 'Unlock Now' button on the main screen to unlock it early.";
+      } else if (msg.includes('help') || msg.includes('how')) {
+        response = "I can help you with:\n• Uploading images\n• Locking your capsule\n• Downloading your memories\n• Understanding features\n\nWhat would you like to know more about?";
+      }
+
+      setMessages(prev => [...prev, { role: 'bot', text: response }]);
+      setIsTyping(false);
+    }, 1000);
+  };
+
+  const handleChatSend = () => {
+    if (!chatInput.trim()) return;
+
+    setMessages(prev => [...prev, { role: 'user', text: chatInput }]);
+    simulateBotResponse(chatInput);
+    setChatInput('');
+  };
+
+  const handleChatKeyPress = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      handleChatSend();
+    }
+  };
+
   return (
     <>
       {isOpen &&
@@ -240,7 +282,6 @@ export default function Dashboard() {
           document.body,
         )}
 
-      {/* Lock modal */}
       {isLockOpen &&
         createPortal(
           <div className="modal-overlay">
@@ -282,7 +323,7 @@ export default function Dashboard() {
                       setLockedUntil(until);
                       try {
                         localStorage.setItem("vtc_lock_until", String(until));
-                      } catch (e) {}
+                      } catch (e) { }
                       setIsLockOpen(false);
                     }}
                     className="modal-btn-upload"
@@ -295,6 +336,217 @@ export default function Dashboard() {
           </div>,
           document.body,
         )}
+
+      {/* Chatbot Sidebar */}
+      <div style={{ position: 'fixed', bottom: 0, right: 0, zIndex: 9999 }}>
+        {!isChatOpen && (
+          <button
+            onClick={() => setIsChatOpen(true)}
+            style={{
+              position: 'fixed',
+              bottom: '24px',
+              right: '24px',
+              backgroundColor: '#6366f1',
+              color: 'white',
+              borderRadius: '50%',
+              padding: '16px',
+              border: 'none',
+              cursor: 'pointer',
+              boxShadow: '0 10px 25px rgba(0,0,0,0.3)',
+              transition: 'all 0.3s ease',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+            onMouseOver={(e) => e.currentTarget.style.transform = 'scale(1.1)'}
+            onMouseOut={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            <MessageCircle size={28} />
+          </button>
+        )}
+
+        <div
+          style={{
+            position: 'fixed',
+            top: 0,
+            right: 0,
+            height: '100vh',
+            width: '400px',
+            backgroundColor: 'white',
+            boxShadow: '-4px 0 20px rgba(0,0,0,0.2)',
+            transform: isChatOpen ? 'translateX(0)' : 'translateX(100%)',
+            transition: 'transform 0.3s ease',
+            display: 'flex',
+            flexDirection: 'column',
+            zIndex: 10000
+          }}
+        >
+          {/* Chat Header */}
+          <div style={{
+            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+            color: 'white',
+            padding: '16px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ backgroundColor: 'rgba(255,255,255,0.2)', borderRadius: '50%', padding: '8px' }}>
+                <MessageCircle size={24} />
+              </div>
+              <div>
+                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 600 }}>Time Capsule Assistant</h3>
+                <p style={{ margin: 0, fontSize: '12px', color: 'rgba(255,255,255,0.8)' }}>Online</p>
+              </div>
+            </div>
+            <button
+              onClick={() => setIsChatOpen(false)}
+              style={{
+                backgroundColor: 'transparent',
+                border: 'none',
+                color: 'white',
+                cursor: 'pointer',
+                padding: '8px',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+              onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)'}
+              onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+            >
+              <X size={24} />
+            </button>
+          </div>
+
+          {/* Messages */}
+          <div style={{
+            flex: 1,
+            overflowY: 'auto',
+            padding: '16px',
+            backgroundColor: '#f9fafb'
+          }}>
+            {messages.map((msg, idx) => (
+              <div
+                key={idx}
+                style={{
+                  marginBottom: '16px',
+                  display: 'flex',
+                  justifyContent: msg.role === 'user' ? 'flex-end' : 'flex-start'
+                }}
+              >
+                <div
+                  style={{
+                    maxWidth: '80%',
+                    padding: '12px 16px',
+                    borderRadius: '16px',
+                    backgroundColor: msg.role === 'user' ? '#6366f1' : 'white',
+                    color: msg.role === 'user' ? 'white' : '#1f2937',
+                    borderBottomRightRadius: msg.role === 'user' ? '4px' : '16px',
+                    borderBottomLeftRadius: msg.role === 'user' ? '16px' : '4px',
+                    boxShadow: '0 1px 3px rgba(0,0,0,0.1)',
+                    fontSize: '14px',
+                    lineHeight: '1.5',
+                    whiteSpace: 'pre-wrap'
+                  }}
+                >
+                  {msg.text}
+                </div>
+              </div>
+            ))}
+
+            {isTyping && (
+              <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '16px' }}>
+                <div style={{
+                  backgroundColor: 'white',
+                  padding: '12px 16px',
+                  borderRadius: '16px',
+                  borderBottomLeftRadius: '4px',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                }}>
+                  <div style={{ display: 'flex', gap: '4px' }}>
+                    <div style={{
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: '#9ca3af',
+                      borderRadius: '50%',
+                      animation: 'bounce 1.4s infinite ease-in-out both',
+                      animationDelay: '0s'
+                    }}></div>
+                    <div style={{
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: '#9ca3af',
+                      borderRadius: '50%',
+                      animation: 'bounce 1.4s infinite ease-in-out both',
+                      animationDelay: '0.16s'
+                    }}></div>
+                    <div style={{
+                      width: '8px',
+                      height: '8px',
+                      backgroundColor: '#9ca3af',
+                      borderRadius: '50%',
+                      animation: 'bounce 1.4s infinite ease-in-out both',
+                      animationDelay: '0.32s'
+                    }}></div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Input */}
+          <div style={{
+            padding: '16px',
+            backgroundColor: 'white',
+            borderTop: '1px solid #e5e7eb'
+          }}>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <input
+                type="text"
+                value={chatInput}
+                onChange={(e) => setChatInput(e.target.value)}
+                onKeyPress={handleChatKeyPress}
+                placeholder="Type your message..."
+                style={{
+                  flex: 1,
+                  border: '1px solid #d1d5db',
+                  borderRadius: '24px',
+                  padding: '12px 16px',
+                  fontSize: '14px',
+                  outline: 'none'
+                }}
+                onFocus={(e) => e.target.style.borderColor = '#6366f1'}
+                onBlur={(e) => e.target.style.borderColor = '#d1d5db'}
+              />
+              <button
+                onClick={handleChatSend}
+                disabled={!chatInput.trim()}
+                style={{
+                  backgroundColor: chatInput.trim() ? '#6366f1' : '#d1d5db',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '50%',
+                  padding: '12px',
+                  cursor: chatInput.trim() ? 'pointer' : 'not-allowed',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  transition: 'background-color 0.2s'
+                }}
+                onMouseOver={(e) => {
+                  if (chatInput.trim()) e.currentTarget.style.backgroundColor = '#4f46e5';
+                }}
+                onMouseOut={(e) => {
+                  if (chatInput.trim()) e.currentTarget.style.backgroundColor = '#6366f1';
+                }}
+              >
+                <Send size={20} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="main">
         <nav className="navbar">
@@ -321,23 +573,20 @@ export default function Dashboard() {
           <button onClick={logout} className="logoutbtn">
             Log out
           </button>
-
-          <button onClick={() => navigate("./ai")} className="upload-btn">
-            AI
-          </button>
         </nav>
 
         <div className="content" style={{ paddingTop: "150px" }}>
-          <div style={{ width: "100%", maxWidth: "1200px", margin: "0 auto" }}>    
+          <div style={{ width: "100%", maxWidth: "1200px", margin: "0 auto" }}>
             {lockedUntil && lockedUntil > now ? (
-              <div style={{     
-                  display: "flex", 
-                  flexDirection: "column", 
-                  alignItems: "center", 
-                  justifyContent: "center",
-                  padding: 40,
-                  minHeight: "400px",
-                  textAlign: "center"}}>
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 40,
+                minHeight: "400px",
+                textAlign: "center"
+              }}>
                 <div style={{ fontSize: "80px", marginBottom: "20px" }}>🔒</div>
                 <h2 style={{ margin: "0 0 16px 0" }}>Time Capsule Locked</h2>
                 <p style={{ color: "#666", fontSize: "18px", margin: "0 0 24px 0" }}>
@@ -349,7 +598,7 @@ export default function Dashboard() {
                       setLockedUntil(null);
                       try {
                         localStorage.removeItem("vtc_lock_until");
-                      } catch (e) {}
+                      } catch (e) { }
                     }
                   }}
                   className="modal-btn-cancel"
@@ -358,17 +607,17 @@ export default function Dashboard() {
                 </button>
               </div>
             ) : images.length == 0 ? (
-              <div style={{ 
-                display: "flex", 
-                flexDirection: "column", 
-                alignItems: "center", 
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
                 justifyContent: "center",
                 padding: "40px",
                 minHeight: "400px",
                 textAlign: "center"
               }}>
-                <p style={{ 
-                  color: "#999", 
+                <p style={{
+                  color: "#999",
                   fontSize: "18px",
                   margin: 0
                 }}>
@@ -377,8 +626,8 @@ export default function Dashboard() {
                 </p>
               </div>
             ) : (
-              <div style={{ 
-                display: "grid", 
+              <div style={{
+                display: "grid",
                 gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
                 gap: "20px",
                 padding: "20px",
@@ -410,6 +659,17 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
+
+      <style>{`
+        @keyframes bounce {
+          0%, 80%, 100% { 
+            transform: scale(0);
+          } 
+          40% { 
+            transform: scale(1.0);
+          }
+        }
+      `}</style>
     </>
   );
 }
