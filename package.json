@@ -11,14 +11,15 @@
     "build:client": "npm --workspace client run build",
     "lint:client": "npm --workspace client run lint",
     "preview:client": "npm --workspace client run preview",
-
     "dev:server": "npm --workspace server/time_capsule run start:dev",
     "test:server": "npm --workspace server/time_capsule run test",
     "install:all": "npm install --workspaces --include-workspace-root",
-
     "start": "concurrently \"npm run dev:client\" \"npm run dev:server\""
   },
   "devDependencies": {
     "concurrently": "^9.2.1"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1"
   }
 }
