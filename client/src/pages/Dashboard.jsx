@@ -150,7 +150,35 @@ export default function Dashboard() {
     setSelectedFile(null);
     setPreview(null);
   };
+  const handleDownloadAll = async () => {
+    if (images.length === 0) {
+      alert("No images to download!");
+      return;
+    }
 
+    try {
+      const response = await fetch("http://localhost:3001/api/images/download-all", {
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `time-capsule-${Date.now()}.zip`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      } else {
+        alert("Failed to download images");
+      }
+    } catch (error) {
+      console.error("Download error:", error);
+      alert("Failed to download images");
+    }
+  };
   return (
     <>
       {isOpen &&
@@ -282,6 +310,10 @@ export default function Dashboard() {
 
           <button onClick={() => setIsLockOpen(true)} className="upload-btn" style={{ marginLeft: 8 }}>
             🔒 Lock Capsule
+          </button>
+
+          <button onClick={handleDownloadAll} className="upload-btn" style={{ marginLeft: 8 }}>
+            📥 Download All
           </button>
 
           <button onClick={logout} className="logoutbtn">
