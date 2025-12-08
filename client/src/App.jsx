@@ -23,7 +23,7 @@ function App() {
               </ProtectedRoute>
             }
           />
-          <Route path="ai" element={<AI />} />
+          <Route path="dashboard/ai" element={<AI />} />
           <Route path="*" element={<Landing />} />
         </Routes>
       </AuthProvider>

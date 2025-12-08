@@ -2,6 +2,7 @@ import { useAuth } from "../auth/AuthContext";
 import { useState, useEffect } from "react";
 import { Upload, X } from "lucide-react";
 import { createPortal } from "react-dom";
+import { useNavigate } from "react-router-dom";
 import "../css/dashboard.css";
 
 export default function Dashboard() {
@@ -17,6 +18,7 @@ export default function Dashboard() {
   const [lockValue, setLockValue] = useState(10); // default 10 minutes
   const [lockUnit, setLockUnit] = useState("minutes");
   const [now, setNow] = useState(Date.now());
+  const navigate = useNavigate();
 
   useEffect(() => {
     fetchImages();
@@ -320,7 +322,7 @@ export default function Dashboard() {
             Log out
           </button>
 
-          <button onClick={() => navigate("../ai")} className="upload-btn">
+          <button onClick={() => navigate("./ai")} className="upload-btn">
             AI
           </button>
         </nav>
